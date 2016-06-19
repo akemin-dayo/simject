@@ -10,5 +10,5 @@
 -(NSString *) bundleIdentifier;
 @end
 
-NSArray *simjectGenerateDylibList(SBApplicationInfo *appInfo);
+NSString *simjectGenerateDylibList(SBApplicationInfo *appInfo);
 NSDictionary *simjectEnvironmentVariables(NSDictionary *origVars, SBApplicationInfo *appInfo);
