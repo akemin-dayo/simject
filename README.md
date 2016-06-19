@@ -16,7 +16,7 @@ simject is BSD-licensed. See `LICENSE` for more information.
 
 ### simject usage
 
-1. Place your dynamic libraries and accompanying property lists inside /opt/simject to load them in the iOS Simulator. Do not delete `simject.plist` or `simject.dylib`.
+1. Place your dynamic libraries and accompanying property lists inside `/opt/simject` to load them in the iOS Simulator. Do not delete `simject.plist` or `simject.dylib`.
 
 1. Inside the `bin` subdirectory, you will find the `respring_simulator` command-line tool. Execute it to cause a booted iOS Simulator to respring and be able to load tweaks.
 
