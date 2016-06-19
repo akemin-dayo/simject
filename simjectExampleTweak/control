@@ -1,0 +1,9 @@
+Package: net.angelxwind.simjectexampletweak
+Name: simject Example Tweak
+Depends: mobilesubstrate
+Version: 1.0
+Architecture: iphoneos-arm
+Description: An example of how to compile a tweak targeting the iOS Simulator.
+Maintainer: Karen Tsai (angelXwind) <angelXwind@angelxwind.net>
+Author: Karen Tsai (angelXwind) <angelXwind@angelxwind.net>
+Section: Tweaks

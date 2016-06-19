@@ -30,11 +30,13 @@ simject is BSD-licensed. See `LICENSE` for more information.
 
 1. Change your `TARGET` variable to `TARGET = simulator:clang` (you may optionally specify the SDK/deployment versions)
 
+1. If you want to support 32-bit iOS Simulators (in addition to 64-bit), add `ARCH = x86_64 i386` to your Makefile. If you are fine without 32-bit support, then simply add `ARCH = x86_64`.
+
 1. `make` your project and copy `.theos/obj/iphone_simulator/$YOUR_TWEAK.dylib` to `/opt/simject/$YOUR_TWEAK.dylib`
 
 1. Also make sure to copy `$YOUR_TWEAK.plist` to `/opt/simject/$YOUR_TWEAK.plist`. simject will not load your tweak if you miss this step!
 
-1. Please note that Cydia Substrate and its functionality is not available while using the iOS Simulator.
+1. An example tweak project is available in the `simjectExampleTweak/` subfolder. Use it as reference if you want.
 
 ### Final notes
 
