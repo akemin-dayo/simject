@@ -1,0 +1,11 @@
+*.o
+.theos/*
+*/.theos/*
+**/.theos/*
+debs/*
+*.deb
+*.dylib
+*.sublime-workspace
+_/*
+obj/*
+bin/*
