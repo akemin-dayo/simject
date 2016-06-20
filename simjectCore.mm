@@ -24,10 +24,12 @@ NSString *simjectGenerateDylibList(SBApplicationInfo *appInfo, NSString *origina
 			// If supported iOS versions are specified, we check it first
 			NSArray *supportedVersions = filter[@"CoreFoundationVersion"];
 			if (supportedVersions && (supportedVersions.count == 1 || supportedVersions.count == 2)) {
-				if (supportedVersions.count == 1 && [supportedVersions[0] floatValue] > kCFCoreFoundationVersionNumber)
+				if (supportedVersions.count == 1 && [supportedVersions[0] floatValue] > kCFCoreFoundationVersionNumber) {
 					continue; // doesn't meet lower bound
-				if ([supportedVersions[0] floatValue] > kCFCoreFoundationVersionNumber || [supportedVersions[1] floatValue] < kCFCoreFoundationVersionNumber)
+				}
+				if ([supportedVersions[0] floatValue] > kCFCoreFoundationVersionNumber || [supportedVersions[1] floatValue] < kCFCoreFoundationVersionNumber) {
 					continue; // outside bounds
+				}
 			}
 			// Now, check if the selected app's bundle ID matches anything in the plist
 			// Also check if any of the bundle IDs in the plist start with com.apple.*
@@ -42,8 +44,9 @@ NSString *simjectGenerateDylibList(SBApplicationInfo *appInfo, NSString *origina
 		}
 	}
 	NSString *ourDylibs = [dylibsToInject componentsJoinedByString:@":"];
-	if (originalEnv && originalEnv.length > 0)
+	if (originalEnv && originalEnv.length > 0) {
 		ourDylibs = [NSString stringWithFormat:@"%@:%@", originalEnv, ourDylibs];
+	}
 	return ourDylibs;
 }
 
