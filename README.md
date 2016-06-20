@@ -42,4 +42,4 @@ simject is BSD-licensed. See `LICENSE` for more information.
 
 Do keep in mind that just because your tweak works in the Simulator doesn't necessarily mean it'll work on an actual iOS device. Yes, in 99% of cases, it will work just fine, but there will always be some strange edge cases where this does not apply.
 
-Also, special thanks to PoomSmart, who told me about the existence of `-[UIApplicationInfo environmentVariables]`, which is crucial to how simject works.
+Also, special thanks to PoomSmart, who told me about the existence of `-[SBApplicationInfo environmentVariables]`, which is crucial to how simject works.
