@@ -26,17 +26,21 @@ NSString *simjectGenerateDylibList(SBApplicationInfo *appInfo, NSString *origina
 			if (supportedVersions && (supportedVersions.count == 1 || supportedVersions.count == 2)) {
 				if (supportedVersions.count == 1 && [supportedVersions[0] floatValue] > kCFCoreFoundationVersionNumber)
 					continue; // doesn't meet lower bound
-				if ([supportedVersions[0] floatValue] > kCFCoreFoundationVersionNumber || [supportedVersions[1] floatValue] < kCFCoreFoundationVersionNumber)
-					continue; // outside bounds
+				if (supportedVersions.count > 1) {
+					if ([supportedVersions[0] floatValue] > kCFCoreFoundationVersionNumber || [supportedVersions[1] floatValue] < kCFCoreFoundationVersionNumber)
+						continue; // outside bounds
+				}
 			}
 			// Now, check if the selected app's bundle ID matches anything in the plist
-			// Also check if any of the bundle IDs in the plist start with com.apple.*
-			if ([entry isEqualToString:bundleIdentifier] || [entry hasPrefix:@"com.apple."]) {
+			if ([entry isEqualToString:bundleIdentifier] || [entry hasPrefix:@"com.apple.UIKit"] || [entry hasPrefix:@"com.apple.Security"]) {
 				// If either of those conditions are met, inject the dylib
-				// Why inject com.apple.*? If a dylib is targeting that, it's likely a framework (com.apple.UIKit, etc.)
+				// Any app being injected here meant to be an UIKit app, so we have com.apple.UIKit bundle check
+				// com.apple.Security can also be added, because CydiaSubstrate injects into everything with that included
 				// An improvement can be made here by checking if the bundle ID is an installed system app or not... (-[SBApplicationInfo isSystemApplication])
 				// Such a check could be possible by using the MobileInstallationLookup function from the MobileInstallationInstall private framework
 				// I had considered doing that, but for the sake of releasing this in a timely manner, chose not to
+				
+				// At this point, simjectUIKit should be loaded without CoreFoudationVersion restriction
 				[dylibsToInject addObject:[[plistPath stringByDeletingPathExtension] stringByAppendingString:@".dylib"]];
 			}
 		}
