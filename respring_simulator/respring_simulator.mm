@@ -1,4 +1,4 @@
-#import "simjectCore.h"
+#import "../simjectCore.h"
 
 int main(int argc, const char * argv[]) {
 	printf("respring_simulator (C) 2016 Karen Tsai (angelXwind)\n");

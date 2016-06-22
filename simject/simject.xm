@@ -1,4 +1,4 @@
-#import "simjectCore.h"
+#import "../simjectCore.h"
 
 %hook SBApplicationInfo
 -(NSDictionary *) environmentVariables {
