@@ -8,14 +8,14 @@ PACKAGE_VERSION = $(THEOS_PACKAGE_BASE_VERSION)
 include $(THEOS)/makefiles/common.mk
 
 AGGREGATE_NAME = simjectProject
-SUBPROJECTS = simject simjectUIKit respring_simulator
+SUBPROJECTS = simject simjectUIKit simspring
 
 include $(THEOS_MAKE_PATH)/aggregate.mk
 
 after-all::
 	@echo Copying binaries...
 	@mkdir -p bin
-	@cp -v $(THEOS_OBJ_DIR)/respring_simulator $(THEOS_OBJ_DIR)/simject.dylib $(THEOS_OBJ_DIR)/simjectUIKit.dylib bin
+	@cp -v $(THEOS_OBJ_DIR)/simspring $(THEOS_OBJ_DIR)/simject.dylib $(THEOS_OBJ_DIR)/simjectUIKit.dylib bin
 
 clean::
 	@rm -rfv bin

@@ -3,7 +3,7 @@
 NSString *simjectGenerateDylibList(SBApplicationInfo *appInfo, NSString *originalEnv) {
 	// Store the selected app's CFBundleID in an NSString just for easy access
 	// If appInfo is nil, then set bundleIdentifier to com.apple.springboard
-	// Why? Because that means this function's probably being called by respring_simulator, which is targeting SpringBoard
+	// Why? Because that means this function's probably being called by simspring, which is targeting SpringBoard
 	NSString *bundleIdentifier = (appInfo) ? [appInfo bundleIdentifier] : @"com.apple.springboard";
 	// Create an array containing all the filenames in dylibDir (/opt/simject)
 	NSError *e = nil;
