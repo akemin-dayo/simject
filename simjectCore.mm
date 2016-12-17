@@ -26,17 +26,11 @@ NSString *simjectGenerateDylibList(SBApplicationInfo *appInfo, NSString *origina
 			if (supportedVersions && (supportedVersions.count == 1 || supportedVersions.count == 2)) {
 				if (supportedVersions.count == 1 && [supportedVersions[0] floatValue] > kCFCoreFoundationVersionNumber) {
 					continue; // doesn't meet lower bound
-<<<<<<< HEAD
-				if (supportedVersions.count > 1) {
-					if ([supportedVersions[0] floatValue] > kCFCoreFoundationVersionNumber || [supportedVersions[1] floatValue] < kCFCoreFoundationVersionNumber)
-						continue; // outside bounds
-=======
 				}
 				if (supportedVersions.count > 1) {
 					if ([supportedVersions[0] floatValue] > kCFCoreFoundationVersionNumber || [supportedVersions[1] floatValue] < kCFCoreFoundationVersionNumber) {
 						continue; // outside bounds
 					}
->>>>>>> angelXwind/master
 				}
 			}
 			// Now, check if the selected app's bundle ID matches anything in the plist

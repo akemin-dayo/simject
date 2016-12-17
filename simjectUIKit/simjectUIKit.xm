@@ -13,19 +13,11 @@ NSArray *simjectGenerateDylibListForUIKit() {
 	NSMutableArray *dylibsToInject = [NSMutableArray array];
 	// Loop through the list of plists
 	for (NSString *plist in plists) {
-<<<<<<< HEAD
-		// We don't run self nor the original simject.dylib here
-		if ([plist isEqualToString:@"simject.plist"] || [plist isEqualToString:@"simjectUIKit.plist"]) {
-			continue;
-		}
-		// We'll want to deal with absolute paths, so append the filename to dylibDir
-=======
 		// Don't inject simject or simjectUIKit
 		if ([plist isEqualToString:@"simject.plist"] || [plist isEqualToString:@"simjectUIKit.plist"]) {
 			continue;
 		}
 		// We want to deal with absolute paths, so append the filename to dylibDir
->>>>>>> angelXwind/master
 		NSString *plistPath = [dylibDir stringByAppendingPathComponent:plist];
 		NSDictionary *filter = [NSDictionary dictionaryWithContentsOfFile:plistPath];
 		for (NSString *bundle in filter[@"Filter"][@"Bundles"]) {
