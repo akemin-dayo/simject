@@ -9,3 +9,11 @@ TWEAK_NAME = simjectUIKit
 simjectUIKit_FILES = simjectUIKit.xm ../simjectCore.mm
 
 include $(THEOS_MAKE_PATH)/tweak.mk
+<<<<<<< HEAD
+=======
+
+after-all::
+	@echo Copying binaries...
+	@mkdir -p ../bin
+	@cp $(THEOS_OBJ_DIR)/simjectUIKit.dylib ../bin/
+>>>>>>> angelXwind/master
