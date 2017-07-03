@@ -12,10 +12,6 @@ clean::
 setup:: clean all
 	@sudo mkdir -p /opt/simject
 	@sudo chown -R $(USER) /opt/simject
-	@cp -v bin/simject.dylib /opt/simject
-	@cp -v simject/simject.plist /opt/simject
-	@cp -v bin/simjectUIKit.dylib /opt/simject
-	@cp -v simjectUIKit/simjectUIKit.plist /opt/simject
 	@cp bin/simject.dylib /opt/simject
 	@cp simject/simject.plist /opt/simject
 	@cp bin/simjectUIKit.dylib /opt/simject
