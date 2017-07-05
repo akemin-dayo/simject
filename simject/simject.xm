@@ -49,8 +49,6 @@ NSArray *simjectGenerateDylibList() {
         if (!isInjected) {
             // Decide whether to load the dylib from bundles
             for (NSString *entry in filter[@"Filter"][@"Bundles"]) {
-                if (isInjected)
-                    break;
                 // If supported iOS versions are specified, we check it first
                 NSArray *supportedVersions = filter[@"CoreFoundationVersion"];
                 if (supportedVersions) {
