@@ -24,6 +24,8 @@ simject is BSD-licensed. See `LICENSE` for more information.
 
 1. You probably need to run `respring_simulator` every time the device reboots or if SpringBoard crashes.
 
+1. Note that you can respring multiple simulators too (check its usage), provided that the selected Xcode version is 9 or above.
+
 1. Happy developing! (And don't make SpringBoard cry *too* hard... it has feelings, too! Probably.)
 
 ### Targeting the iOS Simulator
