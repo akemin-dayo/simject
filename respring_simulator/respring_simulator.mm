@@ -18,9 +18,9 @@ void printUsage() {
     printf("\t(Will respring iPhone 5 simulator running iOS 8.1)\n");
     printf("\nRespring the booted device with matching UDID:\n\n");
     printf("\trespring_simulator -i 5AA1C45D-DB69-4C52-A75B-E9BE9C7E7770\n");
-    printf("\t(Will respring simulator with UDID 5AA1C45D-DB69-4C52-A75B-E9BE9C7E7770)\n");
+    printf("\t(Will respring simulator with UDID 5AA1C45D-DB69-4C52-A75B-E9BE9C7E7770)\n\n");
+    printf("\nRespring any booted simulator:\n\n");
     printf("\trespring_simulator all\n");
-    printf("\t(Will respring any booted simulator)\n");
     printf("\n");
 }
 
