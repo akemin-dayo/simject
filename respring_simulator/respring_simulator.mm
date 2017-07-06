@@ -65,9 +65,9 @@ void injectUDIDs(const char *udid, BOOL all) {
     BOOL foundAny = NO;
     injectHeader();
     while (regex_search(bootedDevices, m, p)) {
-        const char *bootedDevice = strdup(m[1].str().c_str());
         const char *bootedUDID = strdup(m[2].str().c_str());
-        if (all || (udid && strcmp(bootedUDID, udid) == 0)) {
+        if (all || (udid && !strcmp(bootedUDID, udid))) {
+            const char *bootedDevice = strdup(m[1].str().c_str());
             inject(bootedUDID, bootedDevice, NO);
             foundAny = YES;
         }
@@ -80,9 +80,9 @@ void injectUDIDs(const char *udid, BOOL all) {
 
 int main(int argc, char *const argv[]) {
     if (argc == 2) {
-        if (strcmp(argv[1], "all") == 0) {
+        if (!strcmp(argv[1], "all")) {
             injectUDIDs(NULL, YES);
-        } else if (strcmp(argv[1], "help")) {
+        } else if (!strcmp(argv[1], "help")) {
             printUsage();
             exit(EXIT_SUCCESS);
         }
@@ -150,17 +150,17 @@ int main(int argc, char *const argv[]) {
             printf("Error: iOS %s SDK is not installed, or not supported\n", version);
             exit(EXIT_FAILURE);
         }
-        for (NSDictionary *entry in runtime) {
-            NSString *state = entry[@"state"];
-            NSString *name = entry[@"name"];
-            NSString *udid = entry[@"udid"];
-            if ([name isEqualToString:[NSString stringWithUTF8String:device]]) {
-                if (![state isEqualToString:@"Booted"]) {
-                    printf("Error: This device is not yet booted up\n");
+        for (NSDictionary <NSString *, NSString *> *entry in runtime) {
+            const char *state = [entry[@"state"] UTF8String];
+            const char *name = [entry[@"name"] UTF8String];
+            const char *udid = [entry[@"udid"] UTF8String];
+            if (!strcmp(name, device)) {
+                if (strcmp(state, "Booted")) {
+                    printf("Error: This device (%s, %s) is not yet booted up\n", name, udid);
                     exit(EXIT_FAILURE);
                 }
                 injectHeader();
-                inject([udid UTF8String], [name UTF8String], YES);
+                inject(udid, name, YES);
             }
         }
     }
