@@ -43,18 +43,17 @@ void injectHeader() {
 }
 
 void inject(const char *udid, const char *device, BOOL _exit) {
+    if (device) {
+        printf("Respringing %s (%s) ...\n", udid, device);
+    } else {
+        printf("Respringing %s ...\n", !strcmp(udid, "booted") ? "a booted device" : udid);
+    }
     pid_t pid = fork();
     if (pid == 0) {
         system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", udid] UTF8String]);
-        if (device) {
-            printf("Respringing %s (%s) ...\n", udid, device);
-        } else {
-            printf("Respringing %s ...\n", !strcmp(udid, "booted") ? "a booted device" : udid);
-        }
         system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl stop com.apple.backboardd", udid] UTF8String]);
         exit(EXIT_SUCCESS);
     } else {
-        waitpid(pid, NULL, 0);
         if (_exit)
             exit(EXIT_SUCCESS);
 
