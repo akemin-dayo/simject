@@ -38,20 +38,20 @@ NSArray *simjectGenerateDylibList() {
         // Nothing should be loaded into launchctl
         if ([processName isEqualToString:@"launchctl"])
             return nil;
+        // If supported iOS versions are specified, we check it first
+        NSArray *supportedVersions = filter[@"CoreFoundationVersion"];
+        if (supportedVersions) {
+            if (supportedVersions.count != 1 && supportedVersions.count != 2)
+                continue; // Supported versions are in wrong format, we should skip
+            if (supportedVersions.count == 1 && [supportedVersions[0] doubleValue] > kCFCoreFoundationVersionNumber) {
+                continue; // Doesn't meet lower bound
+            }
+            if (supportedVersions.count == 2 && ([supportedVersions[0] doubleValue] > kCFCoreFoundationVersionNumber || [supportedVersions[1] doubleValue] < kCFCoreFoundationVersionNumber)) {
+                continue; // Outside bounds
+            }
+        }
         // Decide whether to load the dylib from bundles
         for (NSString *entry in filter[@"Filter"][@"Bundles"]) {
-            // If supported iOS versions are specified, we check it first
-            NSArray *supportedVersions = filter[@"CoreFoundationVersion"];
-            if (supportedVersions) {
-                if (supportedVersions.count != 1 && supportedVersions.count != 2)
-                    continue; // Supported versions are in wrong format, we should skip
-                if (supportedVersions.count == 1 && [supportedVersions[0] doubleValue] > kCFCoreFoundationVersionNumber) {
-                    continue; // Doesn't meet lower bound
-                }
-                if (supportedVersions.count == 2 && ([supportedVersions[0] doubleValue] > kCFCoreFoundationVersionNumber || [supportedVersions[1] doubleValue] < kCFCoreFoundationVersionNumber)) {
-                    continue; // Outside bounds
-                }
-            }
             // Now check if this bundle is loaded in this application or not
             if (!CFBundleGetBundleWithIdentifier((CFStringRef)entry)) {
                 // Skip because this application doesn't load it
