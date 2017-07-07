@@ -16,7 +16,7 @@ NSArray *simjectGenerateDylibList() {
     // Read current bundle identifier
     NSString *bundleIdentifier = NSBundle.mainBundle.bundleIdentifier;
     // We're only interested in the plist files
-    NSArray *plists = [dylibDirContents filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF endswith %@", @"plist"]];
+    NSArray *plists = [dylibDirContents filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF ENDSWITH %@", @"plist"]];
     // Create an empty mutable array that will contain a list of dylib paths to be injected into the target process
     NSMutableArray *dylibsToInject = [NSMutableArray array];
     // Loop through the list of plists
