@@ -85,14 +85,14 @@ NSString *XcodePath() {
 }
 
 void fixLaunchctlIfNecessary(const char *version) {
-    if (!version) {
-        printf("(Fixing launchctl) Notice: Runtime version is not specified, version 11.0 will be used\n");
-        version = "11.0";
-    }
     NSString *searchPath = @"/Library/Developer/CoreSimulator/Profiles/Runtimes";
     NSString *runtimeRoot = [XcodePath() stringByAppendingPathComponent:@"/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot"];
     BOOL rootIsDirectory;
     if (![[NSFileManager defaultManager] fileExistsAtPath:runtimeRoot isDirectory:&rootIsDirectory] || !rootIsDirectory) {
+        if (!version) {
+            printf("(Fixing launchctl) Notice: Runtime version is not specified, version 11.0 will be used\n");
+            version = "11.0";
+        }
         runtimeRoot = [searchPath stringByAppendingPathComponent:[NSString stringWithFormat:@"/iOS %s.simruntime/Contents/Resources/RuntimeRoot", version]];
     }
     NSString *launchctlPath = [runtimeRoot stringByAppendingPathComponent:@"/bin/launchctl"];
