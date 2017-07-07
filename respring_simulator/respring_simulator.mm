@@ -47,7 +47,7 @@ void inject(const char *udid, const char *device, BOOL _exit) {
     if (device) {
         printf("Respringing %s (%s) ...\n", udid, device);
     } else {
-        printf("Respringing %s ...\n", udid);
+        printf("Respringing %s ...\n", strcmp(udid, "booted") == 0 ? "a booted device" : udid);
     }
     system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl stop com.apple.backboardd", udid] UTF8String]);
     if (_exit)
@@ -78,9 +78,87 @@ void injectUDIDs(const char *udid, BOOL all) {
     exit(foundAny ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 
+NSString *XcodePath() {
+    char buffer[128];
+    size_t len = readlink("/var/db/xcode_select_link", buffer, 128);
+    return len ? [NSString stringWithUTF8String:buffer] : nil;
+}
+
+void fixLaunchctlIfNecessary(const char *version) {
+    NSString *searchPath = @"/Library/Developer/CoreSimulator/Profiles/Runtimes";
+    NSString *runtimeRoot = [XcodePath() stringByAppendingPathComponent:@"/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot"];
+    BOOL rootIsDirectory;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:runtimeRoot isDirectory:&rootIsDirectory] || !rootIsDirectory) {
+        if (!version) {
+            printf("(Fixing launchctl) Notice: Runtime version is not specified, version 11.0 will be used\n");
+            version = "11.0";
+        }
+        runtimeRoot = [searchPath stringByAppendingPathComponent:[NSString stringWithFormat:@"/iOS %s.simruntime/Contents/Resources/RuntimeRoot", version]];
+    }
+    NSString *launchctlPath = [runtimeRoot stringByAppendingPathComponent:@"/bin/launchctl"];
+    BOOL launchctlIsDirectory;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:runtimeRoot isDirectory:&rootIsDirectory] && rootIsDirectory && ![[NSFileManager defaultManager] fileExistsAtPath:launchctlPath isDirectory:&launchctlIsDirectory] && !launchctlIsDirectory) {
+        printf("Notice: The %s runtime does not include launchctl, simject will now try to copy from older runtimes\n", version);
+        NSError *error = nil;
+        NSArray *searchContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:searchPath error:&error];
+        if (error) {
+            printf("Error: Could not access %s to find available runtimes\n", [searchPath UTF8String]);
+            exit(EXIT_FAILURE);
+        }
+        NSArray *runtimes = [searchContents filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(SELF ENDSWITH %@) AND (SELF BEGINSWITH %@)", @"runtime", @"iOS"]];
+        if (runtimes.count == 0) {
+            printf("Error: No such runtime is found\n");
+            exit(EXIT_FAILURE);
+        }
+        runtimes = [runtimes sortedArrayUsingSelector:@selector(localizedStandardCompare:)];
+        BOOL copied = NO;
+        for (NSString *runtime in [runtimes reverseObjectEnumerator]) {
+            if ([runtime compare:@"iOS 11.0.simruntime" options:NSForcedOrderingSearch | NSNumericSearch] >= NSOrderedSame) {
+                printf("Notice: Skipping %s\n", [runtime UTF8String]);
+                continue;
+            }
+            NSString *oldLaunchctlPath = [[searchPath stringByAppendingPathComponent:runtime] stringByAppendingPathComponent:@"/Contents/Resources/RuntimeRoot/bin/launchctl"];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:oldLaunchctlPath isDirectory:&launchctlIsDirectory] && !launchctlIsDirectory) {
+                printf("Notice: Found launchctl in %s\n", [runtime UTF8String]);
+                NSString *binPath = [launchctlPath stringByDeletingLastPathComponent];
+                BOOL binExisted, binIsDirectory;
+                if (!(binExisted = [[NSFileManager defaultManager] fileExistsAtPath:binPath isDirectory:&binIsDirectory]) || !binIsDirectory) {
+                    printf("Notice: Creating /bin folder\n");
+                    if (binExisted && !binIsDirectory) {
+                        printf("Notice: Improper /bin detected, removing\n");
+                        if (![[NSFileManager defaultManager] removeItemAtPath:binPath error:NULL]) {
+                            printf("Error: Could not remove /bin\n");
+                            exit(EXIT_FAILURE);
+                        }
+                    }
+                    if (![[NSFileManager defaultManager] createDirectoryAtPath:binPath withIntermediateDirectories:NO attributes:nil error:NULL]) {
+                        printf("Error: Could not create /bin folder\n");
+                        exit(EXIT_FAILURE);
+                    }
+                }
+                if (![[NSFileManager defaultManager] copyItemAtPath:oldLaunchctlPath toPath:launchctlPath error:NULL]) {
+                    printf("Error: Could not copy launchctl from %s\n", [runtime UTF8String]);
+                    exit(EXIT_FAILURE);
+                }
+                if ([runtime compare:@"iOS 10.0.simruntime" options:NSForcedOrderingSearch | NSNumericSearch] < NSOrderedSame) {
+                    printf("Warning: %s may not be suitable for iOS 11, iOS 10.x runtime is recommended\n", [runtime UTF8String]);
+                }
+                printf("Notice: launchctl from %s is copied\n", [runtime UTF8String]);
+                copied = YES;
+                break;
+            }
+        }
+        if (!copied) {
+            printf("Error: Could not find any proper launchctl to copy\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+}
+
 int main(int argc, char *const argv[]) {
     if (argc == 2) {
         if (!strcmp(argv[1], "all")) {
+            fixLaunchctlIfNecessary(NULL);
             injectUDIDs(NULL, YES);
         } else if (!strcmp(argv[1], "help")) {
             printUsage();
@@ -121,9 +199,7 @@ int main(int argc, char *const argv[]) {
         }
     }
     if (udidFlag || deviceFlag || versionFlag) {
-        char buffer[128];
-        size_t len = readlink("/var/db/xcode_select_link", buffer, 128);
-        if (len && [[[NSBundle bundleWithPath:[NSString stringWithUTF8String:strcat(buffer, "/Applications/Simulator.app/")]] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey] doubleValue] < 800.0) {
+        if ([[[NSBundle bundleWithPath:[XcodePath() stringByAppendingPathComponent:@"/Applications/Simulator.app/"]] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey] doubleValue] < 800.0) {
             printf("Warning: The selected Xcode version does not support multiple simulators, booting this device could cause the old one to stop (if not the same)");
         }
         if (!(udidFlag != (deviceFlag && versionFlag))) {
@@ -131,6 +207,7 @@ int main(int argc, char *const argv[]) {
             exit(EXIT_FAILURE);
         }
     }
+    fixLaunchctlIfNecessary(version);
     if (!udidFlag && !deviceFlag && !versionFlag) {
         injectHeader();
         inject("booted", NULL, YES);
@@ -147,7 +224,7 @@ int main(int argc, char *const argv[]) {
         }
         NSArray <NSDictionary *> *runtime = devices[[NSString stringWithFormat:@"iOS %s", version]];
         if (runtime == nil || runtime.count == 0) {
-            printf("Error: iOS %s SDK is not installed, or not supported\n", version);
+            printf("Error: iOS %s runtime is not installed, or not supported\n", version);
             exit(EXIT_FAILURE);
         }
         for (NSDictionary <NSString *, NSString *> *entry in runtime) {
