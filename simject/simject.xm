@@ -34,41 +34,41 @@ NSArray *simjectGenerateDylibList() {
         NSDictionary *filter = [NSDictionary dictionaryWithContentsOfFile:plistPath];
         // A boolean that indicates if the dylib is already injected
         BOOL isInjected = NO;
-        // Decide whether to load the dylib from executables
         NSString *processName = [[NSProcessInfo processInfo] processName];
         // Nothing should be loaded into launchctl
         if ([processName isEqualToString:@"launchctl"])
             return nil;
-        for (NSString *process in filter[@"Filter"][@"Executables"]) {
-            if ([process isEqualToString:processName]) {
-                [dylibsToInject addObject:[[plistPath stringByDeletingPathExtension] stringByAppendingString:@".dylib"]];
-                isInjected = YES;
-                break;
+        // If supported iOS versions are specified, we check it first
+        NSArray *supportedVersions = filter[@"CoreFoundationVersion"];
+        if (supportedVersions) {
+            if (supportedVersions.count != 1 && supportedVersions.count != 2)
+                continue; // Supported versions are in wrong format, we should skip
+            if (supportedVersions.count == 1 && [supportedVersions[0] doubleValue] > kCFCoreFoundationVersionNumber) {
+                continue; // Doesn't meet lower bound
+            }
+            if (supportedVersions.count == 2 && ([supportedVersions[0] doubleValue] > kCFCoreFoundationVersionNumber || [supportedVersions[1] doubleValue] < kCFCoreFoundationVersionNumber)) {
+                continue; // Outside bounds
             }
         }
+        // Decide whether to load the dylib from bundles
+        for (NSString *entry in filter[@"Filter"][@"Bundles"]) {
+            // Now check if this bundle is loaded in this application or not
+            if (!CFBundleGetBundleWithIdentifier((CFStringRef)entry)) {
+                // Skip because this application doesn't load it
+                continue;
+            }
+            [dylibsToInject addObject:[[plistPath stringByDeletingPathExtension] stringByAppendingString:@".dylib"]];
+            isInjected = YES;
+            break;
+        }
         if (!isInjected) {
-            // Decide whether to load the dylib from bundles
-            for (NSString *entry in filter[@"Filter"][@"Bundles"]) {
-                // If supported iOS versions are specified, we check it first
-                NSArray *supportedVersions = filter[@"CoreFoundationVersion"];
-                if (supportedVersions) {
-                    if (supportedVersions.count != 1 && supportedVersions.count != 2)
-                        continue; // Supported versions are in wrong format, we should skip
-                    if (supportedVersions.count == 1 && [supportedVersions[0] doubleValue] > kCFCoreFoundationVersionNumber) {
-                        continue; // Doesn't meet lower bound
-                    }
-                    if (supportedVersions.count == 2 && ([supportedVersions[0] doubleValue] > kCFCoreFoundationVersionNumber || [supportedVersions[1] doubleValue] < kCFCoreFoundationVersionNumber)) {
-                        continue; // Outside bounds
-                    }
+            // Decide whether to load the dylib from executables
+            for (NSString *process in filter[@"Filter"][@"Executables"]) {
+                if ([process isEqualToString:processName]) {
+                    [dylibsToInject addObject:[[plistPath stringByDeletingPathExtension] stringByAppendingString:@".dylib"]];
+                    isInjected = YES;
+                    break;
                 }
-                // Now check if this bundle is loaded in this application or not
-                if (!CFBundleGetBundleWithIdentifier((CFStringRef)entry)) {
-                    // Skip because this application doesn't load it
-                    continue;
-                }
-                [dylibsToInject addObject:[[plistPath stringByDeletingPathExtension] stringByAppendingString:@".dylib"]];
-                isInjected = YES;
-                break;
             }
         }
         if (!isInjected) {

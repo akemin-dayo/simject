@@ -18,7 +18,7 @@ void printUsage() {
     printf("\t(Will respring iPhone 5 simulator running iOS 8.1)\n");
     printf("\nRespring the booted device with matching UDID:\n\n");
     printf("\trespring_simulator -i 5AA1C45D-DB69-4C52-A75B-E9BE9C7E7770\n");
-    printf("\t(Will respring simulator with UDID 5AA1C45D-DB69-4C52-A75B-E9BE9C7E7770)\n\n");
+    printf("\t(Will respring simulator with UDID 5AA1C45D-DB69-4C52-A75B-E9BE9C7E7770)\n");
     printf("\nRespring any booted simulator:\n\n");
     printf("\trespring_simulator all\n");
     printf("\n");
@@ -43,15 +43,21 @@ void injectHeader() {
 }
 
 void inject(const char *udid, const char *device, BOOL _exit) {
-    system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", udid] UTF8String]);
     if (device) {
         printf("Respringing %s (%s) ...\n", udid, device);
     } else {
-        printf("Respringing %s ...\n", strcmp(udid, "booted") == 0 ? "a booted device" : udid);
+        printf("Respringing %s ...\n", !strcmp(udid, "booted") ? "a booted device" : udid);
     }
-    system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl stop com.apple.backboardd", udid] UTF8String]);
-    if (_exit)
+    pid_t pid = fork();
+    if (pid == 0) {
+        system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", udid] UTF8String]);
+        system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl stop com.apple.backboardd", udid] UTF8String]);
         exit(EXIT_SUCCESS);
+    } else {
+        if (_exit)
+            exit(EXIT_SUCCESS);
+
+    }
 }
 
 void injectUDIDs(const char *udid, BOOL all) {
