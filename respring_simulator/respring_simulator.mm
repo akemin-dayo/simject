@@ -51,12 +51,12 @@ void inject(const char *udid, const char *device, BOOL _exit) {
     pid_t pid = fork();
     if (pid == 0) {
         system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", udid] UTF8String]);
+        system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv __XPC_DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", udid] UTF8String]);
         system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl stop com.apple.backboardd", udid] UTF8String]);
         exit(EXIT_SUCCESS);
     } else {
         if (_exit)
             exit(EXIT_SUCCESS);
-
     }
 }
 
