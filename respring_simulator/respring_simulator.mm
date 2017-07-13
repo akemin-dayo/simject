@@ -23,6 +23,8 @@ void printUsage() {
     printf("\t(Will respring simulator with UDID 5AA1C45D-DB69-4C52-A75B-E9BE9C7E7770)\n");
     printf("\nRespring any booted simulator:\n\n");
     printf("\trespring_simulator all\n");
+    printf("\nFor iOS 7 runtime (Xcode <= 6.2 w/o multi-simulator), -l flag is needed:\n\n");
+    printf("\trespring_simulator -l\n");
     printf("\n");
 }
 
