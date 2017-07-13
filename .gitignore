@@ -9,3 +9,4 @@ debs/*
 _/*
 obj/*
 bin/*
+.DS_Store
