@@ -7,6 +7,11 @@
 static NSArray *blackListForFLEX = @[@"com.apple.Search.framework", @"com.apple.accessibility.AccessibilityUIServer"];
 
 NSArray *simjectGenerateDylibList() {
+    NSString *processName = [[NSProcessInfo processInfo] processName];
+    // launchctl, you are a special case
+    if ([processName isEqualToString:@"launchctl"]) {
+        return nil;
+    }
     // Create an array containing all the filenames in dylibDir (/opt/simject)
     NSError *e = nil;
     NSArray *dylibDirContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:dylibDir error:&e];
@@ -34,10 +39,6 @@ NSArray *simjectGenerateDylibList() {
         NSDictionary *filter = [NSDictionary dictionaryWithContentsOfFile:plistPath];
         // A boolean that indicates if the dylib is already injected
         BOOL isInjected = NO;
-        NSString *processName = [[NSProcessInfo processInfo] processName];
-        // Nothing should be loaded into launchctl
-        if ([processName isEqualToString:@"launchctl"])
-            return nil;
         // If supported iOS versions are specified, we check it first
         NSArray *supportedVersions = filter[@"CoreFoundationVersion"];
         if (supportedVersions) {
