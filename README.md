@@ -50,6 +50,6 @@ simject is BSD-licensed. See `LICENSE` for more information.
 
 ### Final notes
 
-Do keep in mind that just because your tweak works in the Simulator doesn't necessarily mean it'll work on an actual iOS device. Yes, in 99% of cases, it will work just fine, but there will always be some strange edge cases where this does not apply.
+Do keep in mind that just because your tweak works in the Simulator doesn't necessarily mean it'll work on an actual iOS device. Yes, in 99% of cases, it will work just fine, but there will always be some strange edge cases where this does not apply. Plus, certain features are usually ripped out of simulator runtimes so please don't expect testing on simulators are 100% similar to on real devices.
 
 Also, special thanks to PoomSmart for his countless contributions.
