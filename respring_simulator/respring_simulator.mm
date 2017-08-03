@@ -42,7 +42,7 @@ string exec(const char *cmd) {
 }
 
 void injectHeader() {
-    printf("respring_simulator (C) 2016 Karen Tsai (angelXwind)\n");
+    printf("respring_simulator (C) 2016-2017 Karen／明美 (angelXwind)\n");
     printf("Injecting appropriate dynamic libraries from /opt/simject...\n");
 }
 
