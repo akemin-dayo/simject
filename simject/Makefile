@@ -10,6 +10,6 @@ simject_FILES = simject.xm
 include $(THEOS_MAKE_PATH)/tweak.mk
 
 after-all::
-	@echo Copying binaries...
+	@echo "Copying binaries..."
 	@mkdir -p ../bin
-	@cp $(THEOS_OBJ_DIR)/simject.dylib ../bin/
+	@cp -v $(THEOS_OBJ_DIR)/simject.dylib ../bin/

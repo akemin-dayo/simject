@@ -11,39 +11,48 @@ using namespace std;
 
 BOOL iOS7 = NO;
 
+void globalHeader() {
+	printf("respring_simulator (C) 2016-2017 Karen／明美 (angelXwind)\n");
+}
+
 void printUsage() {
-    printf("\nUsage:\n");
-    printf("\nRespring the latest booted device:\n\n");
-    printf("\trespring_simulator\n");
-    printf("\nRespring the booted device with matching type and version:\n\n");
-    printf("\trespring_simulator -d \"iPhone 5\" -v 8.1\n");
-    printf("\t(Will respring iPhone 5 simulator running iOS 8.1)\n");
-    printf("\nRespring the booted device with matching UDID:\n\n");
-    printf("\trespring_simulator -i 5AA1C45D-DB69-4C52-A75B-E9BE9C7E7770\n");
-    printf("\t(Will respring simulator with UDID 5AA1C45D-DB69-4C52-A75B-E9BE9C7E7770)\n");
-    printf("\nRespring any booted simulator:\n\n");
-    printf("\trespring_simulator all\n");
-    printf("\nFor iOS 7 runtime (Xcode <= 6.2 w/o multi-simulator), -l flag is needed:\n\n");
-    printf("\trespring_simulator -l\n");
-    printf("\n");
+	globalHeader();
+	printf("\nUsage: respring_simulator [options]\n");
+	printf("Example: respring_simulator -d \"iPhone 5\" -v 8.1\n");
+	printf("\nAvailable options:\n");
+	printf("\t-h    Shows this usage dialog\n");
+	printf("\t-d    Specifies a device type\n");
+	printf("\t-v    Specifies an iOS version\n");
+	printf("\t-i    Specifies a UUID corresponding to a specific iOS Simulator\n");
+	printf("\t-l    Enables iOS 7 compatibility mode (simject will not work with the iOS 7 runtime without this)\n");
+	printf("\tall   Resprings all booted iOS Simulators\n");
+	printf("\nExample usages:\n");
+	printf("\tRespring a booted device matching the specified device type and iOS version\n");
+	printf("\t\trespring_simulator -d \"iPhone 5\" -v 8.1\n");
+	printf("\tRespring a booted device with the specified UDID\n");
+	printf("\t\trespring_simulator -i 5AA1C45D-DB69-4C52-A75B-E9BE9C7E7770\n");
+	printf("\tRespring all booted iOS Simulators\n");
+	printf("\t\trespring_simulator all\n");
+	printf("\tRespring an iOS Simulator using the iOS 7 runtime (Xcode <= 6.2)\n");
+	printf("\t\trespring_simulator -l\n");
 }
 
 string exec(const char *cmd) {
-    array<char, 128> buffer;
-    string result;
-    shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
-    if (pipe) {
-        while (!feof(pipe.get())) {
-            if (fgets(buffer.data(), 128, pipe.get()) != NULL)
-                result += buffer.data();
-        }
-    }
-    return result;
+	array<char, 128> buffer;
+	string result;
+	shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
+	if (pipe) {
+		while (!feof(pipe.get())) {
+			if (fgets(buffer.data(), 128, pipe.get()) != NULL)
+				result += buffer.data();
+		}
+	}
+	return result;
 }
 
 void injectHeader() {
-    printf("respring_simulator (C) 2016-2017 Karen／明美 (angelXwind)\n");
-    printf("Injecting appropriate dynamic libraries from /opt/simject...\n");
+	globalHeader();
+	printf("Injecting appropriate dynamic libraries from /opt/simject...\n");
 }
 
 void inject(const char *udid, const char *device, BOOL _exit) {
@@ -75,33 +84,34 @@ void inject(const char *udid, const char *device, BOOL _exit) {
 }
 
 void injectUDIDs(const char *udid, BOOL all) {
-    string bootedDevices = exec("xcrun simctl list devices | grep -E Booted | sed \"s/^[ \\t]*//\"");
-    if (!bootedDevices.length()) {
-        printf("Error: No such booted devices\n");
-        exit(EXIT_FAILURE);
-    }
-    regex p("(.+) \\(([A-Z0-9\\-]+)\\) \\(Booted\\)");
-    smatch m;
-    BOOL foundAny = NO;
-    injectHeader();
-    while (regex_search(bootedDevices, m, p)) {
-        const char *bootedUDID = strdup(m[2].str().c_str());
-        if (all || (udid && !strcmp(bootedUDID, udid))) {
-            const char *bootedDevice = strdup(m[1].str().c_str());
-            inject(bootedUDID, bootedDevice, NO);
-            foundAny = YES;
-        }
-        bootedDevices = m.suffix().str();
-    }
-    if (!foundAny)
-        printf("Error: None of booted devices with UDID(s) specified is found\n");
-    exit(foundAny ? EXIT_SUCCESS : EXIT_FAILURE);
+	string bootedDevices = exec("xcrun simctl list devices | grep -E Booted | sed \"s/^[ \\t]*//\"");
+	if (!bootedDevices.length()) {
+		printf("Error: No booted iOS Simulators were found.\n");
+		exit(EXIT_FAILURE);
+	}
+	regex p("(.+) \\(([A-Z0-9\\-]+)\\) \\(Booted\\)");
+	smatch m;
+	BOOL foundAny = NO;
+	injectHeader();
+	while (regex_search(bootedDevices, m, p)) {
+		const char *bootedUDID = strdup(m[2].str().c_str());
+		if (all || (udid && !strcmp(bootedUDID, udid))) {
+			const char *bootedDevice = strdup(m[1].str().c_str());
+			inject(bootedUDID, bootedDevice, NO);
+			foundAny = YES;
+		}
+		bootedDevices = m.suffix().str();
+	}
+	if (!foundAny) {
+		printf("Error: No booted iOS Simulators with an UUID matching the specified UUID was found.\n");
+	}
+	exit(foundAny ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 
 NSString *XcodePath() {
-    char buffer[128];
-    size_t len = readlink("/var/db/xcode_select_link", buffer, 128);
-    return len ? [NSString stringWithUTF8String:buffer] : nil;
+	char buffer[128];
+	size_t len = readlink("/var/db/xcode_select_link", buffer, 128);
+	return len ? [NSString stringWithUTF8String:buffer] : nil;
 }
 
 double XcodeVersion() {
