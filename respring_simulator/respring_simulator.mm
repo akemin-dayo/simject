@@ -159,7 +159,7 @@ int main(int argc, char *const argv[]) {
         }
     }
     if (udidFlag || deviceFlag || versionFlag || iOS7) {
-        if (xcodeVersion < 800.0) {
+        if (xcodeVersion && xcodeVersion < 800.0) {
             printf("Warning: The selected Xcode version does not support multiple simulators, booting this device could cause the old one to stop (if not the same)\n");
         }
         if (!(udidFlag != (deviceFlag && versionFlag)) && !iOS7) {
