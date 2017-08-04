@@ -24,7 +24,7 @@ Run these commands in a Terminal instance.
 
 ```
 cd simject/
-curl -Lo /tmp/simject_cycript.zip https://cydia.saurik.com/api/latest/3
+curl -Lo /tmp/simject_cycript.zip https://cache.saurik.com/cycript/mac/cycript_0.9.594.zip
 unzip /tmp/simject_cycript.zip -d /tmp/simject_cycript
 mkdir -p CydiaSubstrate.framework
 mv -v /tmp/simject_cycript/Cycript.lib/libsubstrate.dylib CydiaSubstrate.framework/CydiaSubstrate
