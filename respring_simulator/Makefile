@@ -12,6 +12,6 @@ respring_simulator_CFLAGS = -Wno-deprecated-declarations
 include $(THEOS_MAKE_PATH)/tool.mk
 
 after-all::
-	@echo Copying binaries...
+	@echo "Copying binaries..."
 	@mkdir -p ../bin
-	@cp $(THEOS_OBJ_DIR)/respring_simulator ../bin/
+	@cp -v $(THEOS_OBJ_DIR)/respring_simulator ../bin/
