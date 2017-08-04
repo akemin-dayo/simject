@@ -1,34 +1,49 @@
 # simject
 
-simject is a command-line tool and iOS dynamic library that allows developers to easily test their tweaks on the iOS Simulator.
+simject is a command-line tool and iOS dynamic library that allows iOS tweak developers to easily test their tweaks on the iOS Simulator.
 
 simject is BSD-licensed. See `LICENSE` for more information.
 
-### simject setup (requires the latest version of [Theos](https://github.com/theos/theos))
+### Setting up the simject environment (requires the latest version of [Theos](https://github.com/theos/theos))
 
-1. `git clone https://github.com/angelXwind/simject.git`
+Run these commands in a Terminal instance.
 
-1. `cd simject/`
+**Note:** During the process, you will be asked by `sudo` to enter in your login password. Please note that it is normal for nothing to be displayed as you type your password.
 
-1. `make setup`
+```
+git clone https://github.com/angelXwind/simject.git
+cd simject/
+make setup
+```
 
-1. Note: During the process, you will be asked by `sudo` to enter in your login password. Please note that it is normal for nothing to be displayed as you type your password.
+Now, we will need to create a version of `CydiaSubstrate.framework` that has support for the `x86_64` and `i386` architectures.
 
-1. Download the simulator version of [CydiaSubstrate.framework](https://cydia.saurik.com/api/latest/3). Extract the zip file and head inside Cycript.lib, rename the file `libsubtrate.dylib` to `CydiaSubstrate` then have it inside the folder named `CydiaSubstrate.framework`). Copy this framework to `/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS <SDK-Version>.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks` where `<SDK-Version>` is your target runtime version. If `/Library/Frameworks` doesn't exist, you can create it manually.
+### Getting Cydia Substrate to function properly with simject
 
-1. Alternatively, you can obtain the framework ready to be copied this way (using `wget`): `cd ~/Downloads; wget -O cycript.zip https://cydia.saurik.com/api/latest/3; unzip cycript.zip -d cycript; mkdir -p CydiaSubstrate.framework; mv cycript/Cycript.lib/libsubstrate.dylib CydiaSubstrate.framework/CydiaSubstrate; rm -r cycript; rm cycript.zip`
+Run these commands in a Terminal instance.
 
-1. Select your Xcode directory (for example): `sudo xcode-select -s /Applications/Xcode.app`
+```
+cd simject/
+curl -Lo /tmp/simject_cycript.zip https://cydia.saurik.com/api/latest/3
+unzip /tmp/simject_cycript.zip -d /tmp/simject_cycript
+mkdir -p CydiaSubstrate.framework
+mv -v /tmp/simject_cycript/Cycript.lib/libsubstrate.dylib CydiaSubstrate.framework/CydiaSubstrate
+rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
+```
+
+1. Copy the resulting `CydiaSubstrate.framework` bundle to `/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS$SDK_VERSION.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks/` where `$SDK_VERSION` is your desired SDK version. If `/Library/Frameworks` does not exist, you can just create it manually.
+
+1. Finally, select your Xcode directory with `sudo xcode-select -s /Applications/Xcode.app` (or wherever Xcode is located on your system)
 
 ### simject usage
 
 1. Place your dynamic libraries and accompanying property lists inside `/opt/simject` to load them in the iOS Simulator. Do not delete `simject.plist` or `simject.dylib`.
 
-1. Inside the `bin` subdirectory, you will find the `respring_simulator` command-line tool. Execute it to cause booted iOS Simulator(s) to respring and be able to load tweaks.
+1. Inside the `bin` subdirectory, you will find the `respring_simulator` command-line tool. Execute it to cause booted iOS Simulator(s) to respring and to be able to load tweaks.
 
-1. You might need to run `respring_simulator` every time the device reboots or if SpringBoard crashes.
+1. IMPORTANT: Please note that you will need to run `respring_simulator` every time the iOS Simulator reboots or if SpringBoard crashes.
 
-1. You can respring multiple simulators as well (check its usage), provided that the selected Xcode version is 9 or above.
+1. `respring_simulator` can respring multiple simulators (check its usage notes), provided that the selected Xcode version is 9.0 or above.
 
 1. Happy developing! (And don't make SpringBoard cry *too* hard... it has feelings, too! Probably.)
 
@@ -50,6 +65,10 @@ simject is BSD-licensed. See `LICENSE` for more information.
 
 ### Final notes
 
-Do keep in mind that just because your tweak works in the Simulator doesn't necessarily mean it'll work on an actual iOS device. Yes, in 99% of cases, it will work just fine, but there will always be some strange edge cases where this does not apply. Plus, certain features are usually ripped out of simulator runtimes so please don't expect testing on simulators are 100% similar to on real devices.
+Please understand that that testing your tweaks on the iOS Simulator is not necessarily a 100% accurate representation of how it will behave on an actual iOS device.
 
-Also, special thanks to PoomSmart for his countless contributions.
+Certain features and frameworks are usually missing from the iOS Simulator (such as anything related to the Weather frameworks).
+
+Yes, in *most* cases, it will work identically across both the iOS Simulator and a real iOS device, but there will always be some edge cases where this does not apply.
+
+Also, special thanks to PoomSmart for his countless contributions to the simject project! Without him, I would have never even had the idea of creating such a tool.
