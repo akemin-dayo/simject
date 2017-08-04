@@ -29,7 +29,7 @@ void printUsage() {
 	printf("\nExample usages:\n");
 	printf("\tRespring a booted device matching the specified device type and iOS version\n");
 	printf("\t\trespring_simulator -d \"iPhone 5\" -v 8.1\n");
-	printf("\tRespring a booted device with the specified UDID\n");
+	printf("\tRespring a booted device with the specified UUID\n");
 	printf("\t\trespring_simulator -i 5AA1C45D-DB69-4C52-A75B-E9BE9C7E7770\n");
 	printf("\tRespring all booted iOS Simulators\n");
 	printf("\t\trespring_simulator all\n");
@@ -55,26 +55,26 @@ void injectHeader() {
 	printf("Injecting appropriate dynamic libraries from /opt/simject...\n");
 }
 
-void inject(const char *udid, const char *device, BOOL _exit) {
+void inject(const char *uuid, const char *device, BOOL _exit) {
 	if (device) {
-		printf("Respringing %s (%s) ...\n", udid, device);
+		printf("Respringing %s (%s) ...\n", uuid, device);
 	} else {
-		printf("Respringing %s ...\n", !strcmp(udid, "booted") ? "a booted device" : udid);
+		printf("Respringing %s ...\n", !strcmp(uuid, "booted") ? "a booted device" : uuid);
 	}
 	if (fork() == 0) {
 		if (iOS7) {
-			if (!strcmp(udid, "booted")) {
-				string sudid = exec("xcrun simctl list devices | grep -E Booted | grep -oE \"\\([A-Z0-9\\-]+\\)\" | sed \"s/[()]//g\"");
-				if (!sudid.empty())
-					sudid.erase(sudid.length() - 1);
-				udid = strdup(sudid.c_str());
+			if (!strcmp(uuid, "booted")) {
+				string suuid = exec("xcrun simctl list devices | grep -E Booted | grep -oE \"\\([A-Z0-9\\-]+\\)\" | sed \"s/[()]//g\"");
+				if (!suuid.empty())
+					suuid.erase(suuid.length() - 1);
+				uuid = strdup(suuid.c_str());
 			}
-			system([[NSString stringWithFormat:@"plutil -replace bootstrap.child.DYLD_INSERT_LIBRARIES -string /opt/simject/simject.dylib %@/Library/Developer/CoreSimulator/Devices/%@/data/var/run/launchd_bootstrap.plist -s", NSHomeDirectory(), @(udid)] UTF8String]);
+			system([[NSString stringWithFormat:@"plutil -replace bootstrap.child.DYLD_INSERT_LIBRARIES -string /opt/simject/simject.dylib %@/Library/Developer/CoreSimulator/Devices/%@/data/var/run/launchd_bootstrap.plist -s", NSHomeDirectory(), @(uuid)] UTF8String]);
 			system("killall launchd_sim");
 		} else {
-			system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", udid] UTF8String]);
-			system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv __XPC_DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", udid] UTF8String]);
-			system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl stop com.apple.backboardd", udid] UTF8String]);
+			system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", uuid] UTF8String]);
+			system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv __XPC_DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", uuid] UTF8String]);
+			system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl stop com.apple.backboardd", uuid] UTF8String]);
 		}
 		exit(EXIT_SUCCESS);
 	} else {
@@ -84,7 +84,7 @@ void inject(const char *udid, const char *device, BOOL _exit) {
 	}
 }
 
-void injectUDIDs(const char *udid, BOOL all) {
+void injectUUIDs(const char *uuid, BOOL all) {
 	string bootedDevices = exec("xcrun simctl list devices | grep -E Booted | sed \"s/^[ \\t]*//\"");
 	if (!bootedDevices.length()) {
 		printf("Error: No booted iOS Simulators were found.\n");
@@ -95,10 +95,10 @@ void injectUDIDs(const char *udid, BOOL all) {
 	BOOL foundAny = NO;
 	injectHeader();
 	while (regex_search(bootedDevices, m, p)) {
-		const char *bootedUDID = strdup(m[2].str().c_str());
-		if (all || (udid && !strcmp(bootedUDID, udid))) {
+		const char *bootedUUID = strdup(m[2].str().c_str());
+		if (all || (uuid && !strcmp(bootedUUID, uuid))) {
 			const char *bootedDevice = strdup(m[1].str().c_str());
-			inject(bootedUDID, bootedDevice, NO);
+			inject(bootedUUID, bootedDevice, NO);
 			foundAny = YES;
 		}
 		bootedDevices = m.suffix().str();
@@ -127,15 +127,15 @@ int main(int argc, char *const argv[]) {
 	iOS7 = (xcodeVersion = XcodeVersion()) < 600.0 && xcodeVersion; // Should be around where Xcode 6.2 is (and only on Mavericks)
 	if (argc == 2) {
 		if (!strcmp(argv[1], "all")) {
-			injectUDIDs(NULL, YES);
+			injectUUIDs(NULL, YES);
 		} else if (!strcmp(argv[1], "help")) {
 			printUsage();
 			exit(EXIT_SUCCESS);
 		}
 	}
 	int opt;
-	char *device = NULL, *version = NULL, *udid = NULL;
-	int deviceFlag = 0, versionFlag = 0, udidFlag = 0;
+	char *device = NULL, *version = NULL, *uuid = NULL;
+	int deviceFlag = 0, versionFlag = 0, uuidFlag = 0;
 	while ((opt = getopt(argc, argv, "d:v:i:l:h")) != -1) {
 		switch (opt) {
 			case 'd':
@@ -155,11 +155,11 @@ int main(int argc, char *const argv[]) {
 				break;
 			}
 			case 'i':
-				if (!regex_match(udid = strdup(optarg), regex("[A-Z0-9\\-]+"))) {
-					udid = NULL;
+				if (!regex_match(uuid = strdup(optarg), regex("[A-Z0-9\\-]+"))) {
+					uuid = NULL;
 					printf("ERROR: UUID was entered incorrectly.\n");
 				}
-				udidFlag = 1;
+				uuidFlag = 1;
 				break;
 			case 'l':
 				iOS7 = YES;
@@ -172,21 +172,21 @@ int main(int argc, char *const argv[]) {
 				exit(EXIT_FAILURE);
 		}
 	}
-	if (udidFlag || deviceFlag || versionFlag || iOS7) {
+	if (uuidFlag || deviceFlag || versionFlag || iOS7) {
 		if (xcodeVersion && xcodeVersion < 800.0) {
 			printf("WARNING: The selected Xcode version does not support multiple running iOS Simulator instances simultaneously. Booting this device may cause any other existing instances of the iOS Simulator to terminate.\n");
 		}
-		if (!(udidFlag != (deviceFlag && versionFlag)) && !iOS7) {
+		if (!(uuidFlag != (deviceFlag && versionFlag)) && !iOS7) {
 			printUsage();
 			exit(EXIT_FAILURE);
 		}
 	}
-	if (!udidFlag && !deviceFlag && !versionFlag) {
+	if (!uuidFlag && !deviceFlag && !versionFlag) {
 		injectHeader();
 		inject("booted", NULL, YES);
 	}
-	if (udidFlag) {
-		injectUDIDs(udid, NO);
+	if (uuidFlag) {
+		injectUUIDs(uuid, NO);
 	} else {
 		NSString *devicesString = [NSString stringWithUTF8String:exec("xcrun simctl list devices -j").c_str()];
 		NSError *error = nil;
@@ -203,14 +203,14 @@ int main(int argc, char *const argv[]) {
 		for (NSDictionary *entry in runtime) {
 			const char *state = [entry[@"state"] UTF8String];
 			const char *name = [entry[@"name"] UTF8String];
-			const char *udid = [entry[@"udid"] UTF8String];
+			const char *uuid = [entry[@"uuid"] UTF8String];
 			if (!strcmp(name, device)) {
 				if (strcmp(state, "Booted")) {
-					printf("ERROR: This device (%s, %s) has not yet booted up.\n", name, udid);
+					printf("ERROR: This device (%s, %s) has not yet booted up.\n", name, uuid);
 					exit(EXIT_FAILURE);
 				}
 				injectHeader();
-				inject(udid, name, YES);
+				inject(uuid, name, YES);
 			}
 		}
 	}
