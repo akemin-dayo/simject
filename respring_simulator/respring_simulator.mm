@@ -52,21 +52,20 @@ void inject(const char *udid, const char *device, BOOL _exit) {
     } else {
         printf("Respringing %s ...\n", !strcmp(udid, "booted") ? "a booted device" : udid);
     }
-    pid_t pid = fork();
-    if (pid == 0) {
-    	if (iOS7) {
-    		if (!strcmp(udid, "booted")) {
-    			string sudid = exec("xcrun simctl list devices | grep -E Booted | grep -oE \"\\([A-Z0-9\\-]+\\)\" | sed \"s/[()]//g\"");
-    			if (!sudid.empty())
-    				sudid.erase(sudid.length() - 1);
-    			udid = strdup(sudid.c_str());
-    		}
-    		system([[NSString stringWithFormat:@"plutil -replace bootstrap.child.DYLD_INSERT_LIBRARIES -string /opt/simject/simject.dylib %@/Library/Developer/CoreSimulator/Devices/%@/data/var/run/launchd_bootstrap.plist -s", NSHomeDirectory(), @(udid)] UTF8String]);
-    		system("killall launchd_sim");
-    	} else {
-        	system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", udid] UTF8String]);
-        	system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv __XPC_DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", udid] UTF8String]);
-        	system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl stop com.apple.backboardd", udid] UTF8String]);
+    if (fork() == 0) {
+        if (iOS7) {
+            if (!strcmp(udid, "booted")) {
+                string sudid = exec("xcrun simctl list devices | grep -E Booted | grep -oE \"\\([A-Z0-9\\-]+\\)\" | sed \"s/[()]//g\"");
+                if (!sudid.empty())
+                    sudid.erase(sudid.length() - 1);
+                udid = strdup(sudid.c_str());
+            }
+            system([[NSString stringWithFormat:@"plutil -replace bootstrap.child.DYLD_INSERT_LIBRARIES -string /opt/simject/simject.dylib %@/Library/Developer/CoreSimulator/Devices/%@/data/var/run/launchd_bootstrap.plist -s", NSHomeDirectory(), @(udid)] UTF8String]);
+            system("killall launchd_sim");
+        } else {
+            system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", udid] UTF8String]);
+            system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv __XPC_DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", udid] UTF8String]);
+            system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl stop com.apple.backboardd", udid] UTF8String]);
         }
         exit(EXIT_SUCCESS);
     } else {
@@ -106,15 +105,15 @@ NSString *XcodePath() {
 }
 
 double XcodeVersion() {
-	NSBundle *simulatorBundle = [NSBundle bundleWithPath:[XcodePath() stringByAppendingPathComponent:@"/Applications/Simulator.app/"]];
+    NSBundle *simulatorBundle = [NSBundle bundleWithPath:[XcodePath() stringByAppendingPathComponent:@"/Applications/Simulator.app/"]];
     if (simulatorBundle == nil)
-    	simulatorBundle = [NSBundle bundleWithPath:[XcodePath() stringByAppendingPathComponent:@"/Applications/iOS Simulator.app/"]];
+        simulatorBundle = [NSBundle bundleWithPath:[XcodePath() stringByAppendingPathComponent:@"/Applications/iOS Simulator.app/"]];
     return [[simulatorBundle objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey] doubleValue];
 }
 
 int main(int argc, char *const argv[]) {
-	double xcodeVersion = 0;
-	iOS7 = (xcodeVersion = XcodeVersion()) < 600.0; // Roughly Xcode 6.2 (and only on Mavericks)
+    double xcodeVersion = 0;
+    iOS7 = (xcodeVersion = XcodeVersion()) < 600.0 && xcodeVersion; // Roughly Xcode 6.2 (and only on Mavericks)
     if (argc == 2) {
         if (!strcmp(argv[1], "all")) {
             injectUDIDs(NULL, YES);
@@ -152,8 +151,8 @@ int main(int argc, char *const argv[]) {
                 udidFlag = 1;
                 break;
             case 'l':
-            	iOS7 = YES;
-            	break;
+                iOS7 = YES;
+                break;
             default:
                 printUsage();
                 exit(EXIT_FAILURE);
