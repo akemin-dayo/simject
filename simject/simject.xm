@@ -47,7 +47,7 @@ NSArray *simjectGenerateDylibList() {
             if (supportedVersions.count == 1 && [supportedVersions[0] doubleValue] > kCFCoreFoundationVersionNumber) {
                 continue; // Doesn't meet lower bound
             }
-            if (supportedVersions.count == 2 && ([supportedVersions[0] doubleValue] > kCFCoreFoundationVersionNumber || [supportedVersions[1] doubleValue] < kCFCoreFoundationVersionNumber)) {
+            if (supportedVersions.count == 2 && ([supportedVersions[0] doubleValue] > kCFCoreFoundationVersionNumber || [supportedVersions[1] doubleValue] <= kCFCoreFoundationVersionNumber)) {
                 continue; // Outside bounds
             }
         }
