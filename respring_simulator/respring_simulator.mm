@@ -136,7 +136,7 @@ int main(int argc, char *const argv[]) {
 	int opt;
 	char *device = NULL, *version = NULL, *uuid = NULL;
 	int deviceFlag = 0, versionFlag = 0, uuidFlag = 0;
-	while ((opt = getopt(argc, argv, "d:v:i:l:h")) != -1) {
+	while ((opt = getopt(argc, argv, "d:v:i:lh")) != -1) {
 		switch (opt) {
 			case 'd':
 				device = strdup(optarg);
