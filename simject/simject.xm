@@ -1,10 +1,7 @@
 #import "../simject.h"
 #import <dlfcn.h>
 
-// Since many iOS tweak developers use FLEXible (or some variant of that tweak) to inspect the iOS Simulator...
-// There are some processes that can crash when FLEXible is injected into them, significantly decreasing overall performance.
-// These processes do indeed load UIKit as a library, but they do not actually present a GUI so there is no point in injecting FLEXible into them.
-static NSArray *blackListForFLEX = @[@"com.apple.Search.framework", @"com.apple.accessibility.AccessibilityUIServer"];
+static NSArray *blackListForFLEX;
 
 NSArray *simjectGenerateDylibList() {
 	NSString *processName = [[NSProcessInfo processInfo] processName];
@@ -92,6 +89,10 @@ NSArray *simjectGenerateDylibList() {
 }
 
 %ctor {
+	// Since many iOS tweak developers use FLEXible (or some variant of that tweak) to inspect the iOS Simulator...
+	// There are some processes that can crash when FLEXible is injected into them, significantly decreasing overall performance.
+	// These processes do indeed load UIKit as a library, but they do not actually present a GUI so there is no point in injecting FLEXible into them.
+	blackListForFLEX = @[@"com.apple.Search.framework", @"com.apple.accessibility.AccessibilityUIServer", @"com.apple.backboardd"];
 	// Inject any dylib meant to be run for this application
 	for (NSString *dylib in simjectGenerateDylibList()) {
 		HBLogDebug(@"Injecting %@ into %@", dylib, NSBundle.mainBundle.bundleIdentifier);
