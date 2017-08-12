@@ -32,9 +32,8 @@ rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 ```
 
 1. Copy the resulting `CydiaSubstrate.framework` bundle to `/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS$SDK_VERSION.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks/` where `$SDK_VERSION` is your desired SDK version. If `/Library/Frameworks` does not exist, you can just create it manually.
- * Note: For runtimes bundled in Xcode 9.0+, instead copy the framework to `/Applications/$XCODE.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks/` where `$XCODE` is usually either `Xcode` or `Xcode-beta`.
-
-1. Finally, select your Xcode directory with `sudo xcode-select -s /Applications/Xcode.app` (or wherever Xcode is located on your system)
+   * Note: For runtimes bundled in Xcode 9.0+, instead copy the framework to `/Applications/$XCODE.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks/` where `$XCODE` is usually either `Xcode` or `Xcode-beta`.
+1. Finally, select your Xcode directory with `sudo xcode-select -s /Applications/Xcode.app` (or wherever Xcode is located on your system).
 
 ### simject usage
 
@@ -52,11 +51,11 @@ rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 
 1. Open your project's `Makefile`.
 
-1. Change your `TARGET` variable to `TARGET = simulator:clang` (you may optionally specify the SDK/deployment versions)
+1. Change your `TARGET` variable to `TARGET = simulator:clang` (you may optionally specify the SDK/deployment versions).
 
 1. If you want to support 32-bit iOS Simulators (in addition to 64-bit), add `ARCHS = x86_64 i386` to your Makefile. If you are fine without 32-bit support, then simply add `ARCHS = x86_64`.
 
-1. `make` your project and copy `.theos/obj/iphone_simulator/$YOUR_TWEAK.dylib` to `/opt/simject/$YOUR_TWEAK.dylib`
+1. `make` your project and copy `.theos/obj/iphone_simulator/$YOUR_TWEAK.dylib` to `/opt/simject/$YOUR_TWEAK.dylib`.
 
 1. If there is already `/opt/simject/$YOUR_TWEAK.dylib`, you have to delete it first before copying.
 
@@ -72,4 +71,4 @@ Certain features and frameworks are usually missing from the iOS Simulator (such
 
 Yes, in *most* cases, it will work identically across both the iOS Simulator and a real iOS device, but there will always be some edge cases where this does not apply.
 
-Also, special thanks to PoomSmart for his countless contributions to the simject project! Without him, I would have never even had the idea of creating such a tool.
+Also, special thanks to [PoomSmart](https://github.com/PoomSmart) for his countless contributions to the simject project! Without him, I would have never even had the idea of creating such a tool.
