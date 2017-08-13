@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
+#include <sys/wait.h>
 #include <iostream>
 #include <string>
 #include <array>
@@ -37,6 +38,14 @@ void printUsage() {
 	printf("\t\trespring_simulator -l\n");
 }
 
+void safe_system(const char *cmd) {
+	int status = system(cmd);
+	if (WEXITSTATUS(status) != EXIT_SUCCESS) {
+		printf("Error executing command, exiting.\n");
+		exit(EXIT_FAILURE);
+	}
+}
+
 string exec(const char *cmd) {
 	array<char, 128> buffer;
 	string result;
@@ -56,6 +65,10 @@ void injectHeader() {
 }
 
 void inject(const char *uuid, const char *device, BOOL _exit) {
+	if (uuid == NULL) {
+		printf("ERROR: UUID is null, cannot continue.\n");
+		exit(EXIT_FAILURE);
+	}
 	if (device) {
 		printf("Respringing %s (%s) ...\n", uuid, device);
 	} else {
@@ -69,12 +82,12 @@ void inject(const char *uuid, const char *device, BOOL _exit) {
 					suuid.erase(suuid.length() - 1);
 				uuid = strdup(suuid.c_str());
 			}
-			system([[NSString stringWithFormat:@"plutil -replace bootstrap.child.DYLD_INSERT_LIBRARIES -string /opt/simject/simject.dylib %@/Library/Developer/CoreSimulator/Devices/%@/data/var/run/launchd_bootstrap.plist -s", NSHomeDirectory(), @(uuid)] UTF8String]);
-			system("killall launchd_sim");
+			safe_system([[NSString stringWithFormat:@"plutil -replace bootstrap.child.DYLD_INSERT_LIBRARIES -string /opt/simject/simject.dylib %@/Library/Developer/CoreSimulator/Devices/%@/data/var/run/launchd_bootstrap.plist -s", NSHomeDirectory(), @(uuid)] UTF8String]);
+			safe_system("killall launchd_sim");
 		} else {
-			system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", uuid] UTF8String]);
-			system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv __XPC_DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", uuid] UTF8String]);
-			system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl stop com.apple.backboardd", uuid] UTF8String]);
+			safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", uuid] UTF8String]);
+			safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv __XPC_DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", uuid] UTF8String]);
+			safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl stop com.apple.backboardd", uuid] UTF8String]);
 		}
 		exit(EXIT_SUCCESS);
 	} else {
@@ -155,7 +168,7 @@ int main(int argc, char *const argv[]) {
 				break;
 			}
 			case 'i':
-				if (!regex_match(uuid = strdup(optarg), regex("[A-Z0-9\\-]+"))) {
+				if (!regex_match(uuid = strdup(optarg), regex("[A-Z0-9]{8}\\-[A-Z0-9]{4}\\-[A-Z0-9]{4}\\-[A-Z0-9]{4}\\-[A-Z0-9]{12}"))) {
 					uuid = NULL;
 					printf("ERROR: UUID was entered incorrectly.\n");
 				}
@@ -203,7 +216,7 @@ int main(int argc, char *const argv[]) {
 		for (NSDictionary *entry in runtime) {
 			const char *state = [entry[@"state"] UTF8String];
 			const char *name = [entry[@"name"] UTF8String];
-			const char *uuid = [entry[@"uuid"] UTF8String];
+			const char *uuid = [entry[@"udid"] UTF8String];
 			if (!strcmp(name, device)) {
 				if (strcmp(state, "Booted")) {
 					printf("ERROR: This device (%s, %s) has not yet booted up.\n", name, uuid);
