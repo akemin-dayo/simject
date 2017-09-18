@@ -15,7 +15,7 @@ clean::
 setup:: clean all
 	@sudo mkdir -p /opt/simject
 	@sudo chown -Rv $(USER) /opt/simject
-	# simjectUIKit has been deprecated.
+# simjectUIKit has been deprecated.
 	@rm -fv /opt/simject/simjectUIKit.dylib
 	@rm -fv /opt/simject/simjectUIKit.plist
 	@cp -v bin/simject.dylib /opt/simject
