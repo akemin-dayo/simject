@@ -1,6 +1,4 @@
-ARCHS = x86_64
-# If using Xcode 8.3.3 and below, uncomment the below line to enable building an i386 slice for simject to use with 32-bit iOS Simulators.
-# ARCHS = x86_64 i386
+ARCHS = x86_64 i386
 DEBUG = 0
 
 all::
