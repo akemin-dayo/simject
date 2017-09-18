@@ -1,9 +1,12 @@
 THEOS_PACKAGE_DIR_NAME = debs
 # TARGET = iphone:clang
+# ARCHS = arm64
 # ARCHS = armv7 armv7s arm64
 TARGET = simulator:clang
-ARCHS = x86_64 i386
+ARCHS = x86_64
+# ARCHS = x86_64 i386
 # i386 slice is required for 32-bit iOS Simulator (iPhone 5, etc.)
+# To compile 32-bit binaries, you must install Xcode 8.3.3 or below. See relevant section in README.md for more information.
 DEBUG = 0
 PACKAGE_VERSION = $(THEOS_PACKAGE_BASE_VERSION)
 
