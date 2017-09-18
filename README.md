@@ -16,7 +16,7 @@ cd simject/
 make setup
 ```
 
-**Note 2:** Please see the relevant section below if you wish to test on 32-bit iOS Simulators.
+**Note 2:** Please see the [relevant section below](#using-simject-with-32-bit-ios-simulators) if you wish to test on 32-bit iOS Simulators.
 
 Now, we will need to create a version of `CydiaSubstrate.framework` that has support for the `x86_64` and `i386` architectures.
 
@@ -55,7 +55,7 @@ rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 
 1. Change your `TARGET` variable to `TARGET = simulator:clang` (you may optionally specify the SDK/deployment versions).
 
-1. Add `ARCHS = x86_64` to your `Makefile`. (**Note:** Please see the relevant section below if you wish to test on 32-bit iOS Simulators.)
+1. Add `ARCHS = x86_64` to your `Makefile`. (**Note:** Please see the [relevant section below](#using-simject-with-32-bit-ios-simulators) if you wish to test on 32-bit iOS Simulators.)
 
 1. `make` your project and copy `.theos/obj/iphone_simulator/$YOUR_TWEAK.dylib` to `/opt/simject/$YOUR_TWEAK.dylib`.
 
