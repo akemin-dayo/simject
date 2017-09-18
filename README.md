@@ -8,13 +8,15 @@ simject is BSD-licensed. See `LICENSE` for more information.
 
 Run these commands in a Terminal instance.
 
-**Note:** During the process, you will be asked by `sudo` to enter in your login password. Please note that it is normal for nothing to be displayed as you type your password.
+**Note 1:** During the process, you will be asked by `sudo` to enter in your login password. Please note that it is normal for nothing to be displayed as you type your password.
 
 ```
 git clone https://github.com/angelXwind/simject.git
 cd simject/
 make setup
 ```
+
+**Note 2:** Please see the relevant section below if you wish to test on 32-bit iOS Simulators.
 
 Now, we will need to create a version of `CydiaSubstrate.framework` that has support for the `x86_64` and `i386` architectures.
 
@@ -53,7 +55,7 @@ rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 
 1. Change your `TARGET` variable to `TARGET = simulator:clang` (you may optionally specify the SDK/deployment versions).
 
-1. If you want to support 32-bit iOS Simulators (in addition to 64-bit), add `ARCHS = x86_64 i386` to your Makefile. If you are fine without 32-bit support, then simply add `ARCHS = x86_64`.
+1. Add `ARCHS = x86_64` to your `Makefile`. (**Note:** Please see the relevant section below if you wish to test on 32-bit iOS Simulators.)
 
 1. `make` your project and copy `.theos/obj/iphone_simulator/$YOUR_TWEAK.dylib` to `/opt/simject/$YOUR_TWEAK.dylib`.
 
@@ -62,6 +64,18 @@ rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 1. Also make sure to copy `$YOUR_TWEAK.plist` to `/opt/simject/$YOUR_TWEAK.plist`. simject will not load your tweak if you miss this step!
 
 1. An example tweak project is available in the `simjectExampleTweak/` subfolder. Use it as reference if you want.
+
+### Using simject with 32-bit iOS Simulators
+
+1. Download [Xcode 8.3.3](https://download.developer.apple.com/Developer_Tools/Xcode_8.3.3/Xcode8.3.3.xip) from the Apple Developer Center. (A valid Apple ID is required with access to the Apple Developer Center.)
+
+1. Extract Xcode 8.3.3 somewhere, and run `sudo xcode-select -s /path/to/Xcode8.3.3.app`
+
+1. Change the `TARGET` variable in the simject `Makefile` to `ARCHS = x86_64 i386`.
+
+1. Run `make setup` in the `simject` directory again.
+
+1. In your project's `Makefile`, change your `TARGET` variable to `ARCHS = x86_64 i386`, then build as usual.
 
 ### Final notes
 
