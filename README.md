@@ -41,7 +41,7 @@ rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 
 1. Inside the `bin` subdirectory, you will find the `respring_simulator` command-line tool. Execute it to cause booted iOS Simulator(s) to respring and to be able to load tweaks.
 
-1. IMPORTANT: Please note that you will need to run `respring_simulator` every time the iOS Simulator reboots or if SpringBoard crashes.
+1. IMPORTANT: Please note that you will need to run `respring_simulator` every time the iOS Simulator reboots or if SpringBoard crashes by itself.
 
 1. `respring_simulator` can respring multiple simulators (check its usage notes), provided that the selected Xcode version is 9.0 or above.
 
@@ -61,13 +61,13 @@ rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 
 1. Also make sure to copy `$YOUR_TWEAK.plist` to `/opt/simject/$YOUR_TWEAK.plist`. simject will not load your tweak if you miss this step!
 
-1. An example tweak project is available in the `simjectExampleTweak/` subfolder. Use it as reference if you want.
+1. An example tweak project is available in the `simjectExampleTweak/` subfolder. Use it as reference if you want. Its Makefile is also written so that you can just run `make setup` to copy over the dylib and its plist automatically.
 
 ### Final notes
 
 Please understand that that testing your tweaks on the iOS Simulator is not necessarily a 100% accurate representation of how it will behave on an actual iOS device.
 
-Certain features and frameworks are usually missing from the iOS Simulator (such as anything related to the Weather frameworks).
+Certain features and frameworks are usually missing from or incomplete in the iOS Simulator (such as anything related to the Weather frameworks).
 
 Yes, in *most* cases, it will work identically across both the iOS Simulator and a real iOS device, but there will always be some edge cases where this does not apply.
 
