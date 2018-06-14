@@ -1,4 +1,4 @@
-TARGET = simulator:clang::5.0
+TARGET = simulator:clang::7.0
 
 include $(THEOS)/makefiles/common.mk
 
