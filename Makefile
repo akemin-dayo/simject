@@ -1,4 +1,4 @@
-ARCHS = x86_64 i386
+ARCHS = x86_64
 DEBUG = 0
 
 all::
@@ -18,4 +18,5 @@ setup:: clean all
 	@rm -fv /opt/simject/simjectUIKit.plist
 	@cp -v bin/simject.dylib /opt/simject
 	@cp -v simject/simject.plist /opt/simject
+	@codesign -f -s - /opt/simject/simject.dylib 
 	@echo "Done. Place your tweak's dynamic libraries and accompanying property lists inside /opt/simject to load them in the iOS Simulator."
