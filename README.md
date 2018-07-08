@@ -6,6 +6,8 @@ simject is BSD-licensed. See `LICENSE` for more information.
 
 ### Setting up the simject environment (requires the latest version of [Theos](https://github.com/theos/theos))
 
+First, make sure that you have added your developer account in Xcode > Preferences > Accounts tab. This is required for code-signing some binaries used in simject.
+
 Run these commands in a Terminal instance.
 
 **Note:** During the process, you will be asked by `sudo` to enter in your login password. Please note that it is normal for nothing to be displayed as you type your password.
@@ -16,13 +18,30 @@ cd simject/
 make setup
 ```
 
-Now, we will need to create a version of `CydiaSubstrate.framework` that has support for the `x86_64` and `i386` architectures.
+Now, we will need to create a version of `CydiaSubstrate.framework` that has support for the `x86_64` and `i386` (if you want 32-bit support) architectures.
 
 ### Getting Cydia Substrate to function properly with simject
 
-Run these commands in a Terminal instance.
+If you use Xcode 10 (and above) and target iOS 12 (and above), you need to use [substitute](https://github.com/coolstar/substitute) instead of Cydia Substrate.
+
+Due to the absence of `libstdc++` in iOS 12 simulator of Xcode 10, the Cydia Substrate binary from cycript that requires this library will not work (it will complain `/usr/lib/libstdc++.6.dylib: mach-o, but not built for iOS simulator`). While Cydia Substrate is not open-sourced to allow us to recompile the binary, we still have substitute as a replacement. You can run the following commands:
 
 ```
+# Xcode 10+, iOS 12+
+cd simject/
+git clone https://github.com/PoomSmart/substitute.git
+cd substitute/
+./configure --xcode-sdk=iphonesimulator --xcode-archs=x86_64 && make
+mv -v out/libsubstitute.dylib out/CydiaSubstrate
+codesign -f -s - out/CydiaSubstrate
+mkdir -p ../CydiaSubstrate.framework
+mv -v out/CydiaSubstrate ../CydiaSubstrate.framework/CydiaSubstrate
+cd .. && rm -rf substitute
+```
+Otherwise, run these commands in a Terminal instance.
+
+```
+# Xcode 9 and below
 cd simject/
 curl -Lo /tmp/simject_cycript.zip https://cache.saurik.com/cycript/mac/cycript_0.9.594.zip
 unzip /tmp/simject_cycript.zip -d /tmp/simject_cycript
@@ -51,7 +70,7 @@ rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 
 1. Open your project's `Makefile`.
 
-1. Change your `TARGET` variable to `TARGET = simulator:clang::5.0`. Note that this is just an example, you can change the SDK version used and iOS version to target if you wish.
+1. Change your `TARGET` variable to `TARGET = simulator:clang::7.0` (a must for Xcode 10, with 64-bit compatibility) or `TARGET = simulator:clang::5.0` otherwise (with 32-bit compatibility). Note that this is just an example, you can change the SDK version used and iOS version to target if you wish.
 
 1. If you want to support both 64-bit and 32-bit iOS Simulators, add `ARCHS = x86_64 i386` to your Makefile. If not (or if you're targeting iOS 11), add `ARCHS = x86_64`.
 
