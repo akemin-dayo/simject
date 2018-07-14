@@ -4,6 +4,6 @@ Depends: mobilesubstrate
 Version: 1.0
 Architecture: iphoneos-arm
 Description: An example of how to compile a tweak targeting the iOS Simulator.
-Maintainer: Karen／明美 (angelXwind) <karen@angelxwind.net>
-Author: Karen／明美 (angelXwind) <karen@angelxwind.net>
+Maintainer: Karen/あけみ (angelXwind) <karen@angelxwind.net>
+Author: Karen/あけみ (angelXwind) <karen@angelxwind.net>
 Section: Tweaks

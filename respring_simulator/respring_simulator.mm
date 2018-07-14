@@ -13,7 +13,7 @@ using namespace std;
 BOOL iOS7 = NO;
 
 void globalHeader() {
-	printf("respring_simulator (C) 2016-2017 Karen／明美 (angelXwind)\n");
+	printf("respring_simulator (C) 2016-2018 Karen/あけみ (angelXwind)\n");
 }
 
 void printUsage() {
