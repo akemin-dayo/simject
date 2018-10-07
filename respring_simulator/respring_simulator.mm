@@ -125,7 +125,7 @@ void injectUUIDs(const char *uuid, BOOL all) {
 NSString *XcodePath() {
 	char buffer[128];
 	size_t len = readlink("/var/db/xcode_select_link", buffer, 128);
-	return len ? [NSString stringWithUTF8String:buffer] : nil;
+	return len ? [NSString stringWithUTF8String:buffer] : @"/Applications/Xcode.app";
 }
 
 double XcodeVersion() {
