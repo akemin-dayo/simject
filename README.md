@@ -90,4 +90,6 @@ Certain features and frameworks are usually missing from or incomplete in the iO
 
 Yes, in *most* cases, it will work identically across both the iOS Simulator and a real iOS device, but there will always be some edge cases where this does not apply.
 
+For those who want to test their preference bundle inside the simulator, you need to compile a simulator version of preferenceloader and do some extra steps that you can consult from [here](https://github.com/PoomSmart/preferenceloader-sim). It may not be as convenient as using only simject, but it works, at least.
+
 Also, special thanks to [PoomSmart](https://github.com/PoomSmart) for his countless contributions to the simject project! Without him, I would have never even had the idea of creating such a tool.
