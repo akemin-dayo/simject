@@ -24,7 +24,7 @@ Now, we will need to create a version of `CydiaSubstrate.framework` that has sup
 
 If you use Xcode 10 (and above) and target iOS 12 (and above), you need to use [substitute](https://github.com/coolstar/substitute) instead of Cydia Substrate.
 
-Due to the absence of `libstdc++` in iOS 12 simulator of Xcode 10, the Cydia Substrate binary from cycript that requires this library will not work (it will complain `/usr/lib/libstdc++.6.dylib: mach-o, but not built for iOS simulator`). While Cydia Substrate is not open-sourced to allow us to recompile the binary, we still have substitute as a replacement. You can run the following commands:
+Due to the incompatible `libstdc++` in iOS 12 simulator of Xcode 10, the Cydia Substrate binary from cycript that requires this library will not work (it will complain `/usr/lib/libstdc++.6.dylib: mach-o, but not built for iOS simulator`). While Cydia Substrate is not open-sourced to allow us to recompile the binary, we still have substitute as a replacement. You can run the following commands:
 
 ```
 # Xcode 10+, iOS 12+
