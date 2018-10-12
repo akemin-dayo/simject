@@ -28,7 +28,7 @@ NSArray *simjectGenerateDylibList() {
 			continue;
 		}
 		// Check if the current dylib is FLEXible and if the current process is in the blacklist
-		if ([[plist uppercaseString] rangeOfString:@"FLEX" options:NSLiteralSearch].location != NSNotFound && [blackListForFLEX containsObject:bundleIdentifier]) {
+		if (bundleIdentifier && [[plist uppercaseString] rangeOfString:@"FLEX" options:NSLiteralSearch].location != NSNotFound && [blackListForFLEX containsObject:bundleIdentifier]) {
 			continue;
 		}
 		// We'll want to deal with absolute paths, so append the filename to dylibDir
