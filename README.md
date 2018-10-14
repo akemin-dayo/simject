@@ -22,6 +22,8 @@ Now, we will need to create a version of `CydiaSubstrate.framework` that has sup
 
 ### Getting Cydia Substrate to function properly with simject
 
+Unless you want to do it manually, you can use either `substrate.sh` or `substrate-pre10.sh` script to copy over this framework to the target runtime.
+
 If you use Xcode 10 (and above) and target iOS 12 (and above), you need to use [substitute](https://github.com/coolstar/substitute) instead of Cydia Substrate.
 
 Due to the incompatible `libstdc++` in iOS 12 simulator of Xcode 10, the Cydia Substrate binary from cycript that requires this library will not work (it will complain `/usr/lib/libstdc++.6.dylib: mach-o, but not built for iOS simulator`). While Cydia Substrate is not open-sourced to allow us to recompile the binary, we still have substitute as a replacement. You can run the following commands:
