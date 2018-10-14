@@ -49,6 +49,8 @@ NSArray *simjectGenerateDylibList() {
 				continue; // Outside bounds
 			}
 		}
+		// Get the name of the dylib
+		NSString *dylibName = [[plistPath stringByDeletingPathExtension] stringByAppendingString:@".dylib"];
 		// Decide whether or not to load the dylib based on the Bundles values
 		for (NSString *entry in filter[@"Filter"][@"Bundles"]) {
 			// Check to see whether or not this bundle is actually loaded in this application or not
@@ -56,7 +58,7 @@ NSArray *simjectGenerateDylibList() {
 				// If not, skip it
 				continue;
 			}
-			[dylibsToInject addObject:[[plistPath stringByDeletingPathExtension] stringByAppendingString:@".dylib"]];
+			[dylibsToInject addObject:dylibName];
 			isInjected = YES;
 			break;
 		}
@@ -64,7 +66,7 @@ NSArray *simjectGenerateDylibList() {
 			// Decide whether or not to load the dylib based on the Executables values
 			for (NSString *process in filter[@"Filter"][@"Executables"]) {
 				if ([process isEqualToString:processName]) {
-					[dylibsToInject addObject:[[plistPath stringByDeletingPathExtension] stringByAppendingString:@".dylib"]];
+					[dylibsToInject addObject:dylibName];
 					isInjected = YES;
 					break;
 				}
@@ -79,7 +81,7 @@ NSArray *simjectGenerateDylibList() {
 					continue;
 				}
 				// It's fine to add this dylib at this point
-				[dylibsToInject addObject:[[plistPath stringByDeletingPathExtension] stringByAppendingString:@".dylib"]];
+				[dylibsToInject addObject:dylibName];
 				isInjected = YES;
 				break;
 			}
