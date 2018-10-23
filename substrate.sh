@@ -1,13 +1,13 @@
 #!/bin/sh
 
 if [ "$EUID" -ne 0 ];then
-    echo "This script must be run as root"
-    exit 1
+	echo "This script must be run as root"
+	exit 1
 fi
 
 if [[ -z $1 ]];then
 	echo "Runtime version is required"
-    echo "Example: ./substrate.sh 12.0"
+	echo "Example: ./substrate.sh 12.0"
 	exit 1
 fi
 
