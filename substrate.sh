@@ -11,12 +11,14 @@ if [[ -z $1 ]];then
 	exit 1
 fi
 
-SJ_RUNTIME_ROOT=/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS\ ${1}.simruntime/Contents/Resources/RuntimeRoot
-# In-Xcode directory: /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot
+if [[ $2 -eq 1 ]];then
+    SJ_RUNTIME_ROOT=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot
+else
+    SJ_RUNTIME_ROOT=/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS\ ${1}.simruntime/Contents/Resources/RuntimeRoot
+fi
 
 if [[ ! -d "${SJ_RUNTIME_ROOT}" ]];then
-	echo "Error: iOS $1 runtime is not found in /Library/Developer/CoreSimulator/Profiles/Runtimes"
-	exit 1
+	echo "Error: iOS $1 runtime is not found"
 fi
 
 mkdir -p "${SJ_RUNTIME_ROOT}/Library/Frameworks"

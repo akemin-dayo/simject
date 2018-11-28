@@ -1,4 +1,5 @@
 TARGET = simulator:clang::7.0
+ARCHS = x86_64 i386
 
 include $(THEOS)/makefiles/common.mk
 

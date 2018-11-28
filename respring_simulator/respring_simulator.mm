@@ -52,8 +52,9 @@ string exec(const char *cmd) {
 	shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
 	if (pipe) {
 		while (!feof(pipe.get())) {
-			if (fgets(buffer.data(), 128, pipe.get()) != NULL)
+			if (fgets(buffer.data(), 128, pipe.get()) != NULL) {
 				result += buffer.data();
+			}
 		}
 	}
 	return result;
@@ -78,8 +79,9 @@ void inject(const char *uuid, const char *device, BOOL _exit) {
 		if (iOS7) {
 			if (!strcmp(uuid, "booted")) {
 				string suuid = exec("xcrun simctl list devices | grep -E Booted | grep -oE \"\\([A-Z0-9\\-]+\\)\" | sed \"s/[()]//g\"");
-				if (!suuid.empty())
+				if (!suuid.empty()) {
 					suuid.erase(suuid.length() - 1);
+				}
 				uuid = strdup(suuid.c_str());
 			}
 			safe_system([[NSString stringWithFormat:@"plutil -replace bootstrap.child.DYLD_INSERT_LIBRARIES -string /opt/simject/simject.dylib %@/Library/Developer/CoreSimulator/Devices/%@/data/var/run/launchd_bootstrap.plist -s", NSHomeDirectory(), @(uuid)] UTF8String]);
@@ -87,6 +89,7 @@ void inject(const char *uuid, const char *device, BOOL _exit) {
 		} else {
 			safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", uuid] UTF8String]);
 			safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv __XPC_DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", uuid] UTF8String]);
+            safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv CG_CONTEXT_SHOW_BACKTRACE 1", uuid] UTF8String]);
 			safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl stop com.apple.backboardd", uuid] UTF8String]);
 		}
 		exit(EXIT_SUCCESS);
@@ -130,8 +133,9 @@ NSString *XcodePath() {
 
 double XcodeVersion() {
 	NSBundle *simulatorBundle = [NSBundle bundleWithPath:[XcodePath() stringByAppendingPathComponent:@"/Applications/Simulator.app/"]];
-	if (simulatorBundle == nil)
+	if (simulatorBundle == nil) {
 		simulatorBundle = [NSBundle bundleWithPath:[XcodePath() stringByAppendingPathComponent:@"/Applications/iOS Simulator.app/"]];
+	}
 	return [[simulatorBundle objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey] doubleValue];
 }
 
