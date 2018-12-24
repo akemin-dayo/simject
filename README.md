@@ -4,32 +4,30 @@ simject is a command-line tool and iOS dynamic library that allows iOS tweak dev
 
 simject is BSD-licensed. See `LICENSE` for more information.
 
-### Setting up the simject environment (requires the latest version of [Theos](https://github.com/theos/theos))
-
-First, make sure that you have added your developer account in Xcode > Preferences > Accounts tab. This is required for code-signing some binaries used in simject.
-
-Run these commands in a Terminal instance.
-
-**Note:** During the process, you will be asked by `sudo` to enter in your login password. Please note that it is normal for nothing to be displayed as you type your password.
+### Setting up the simject environment
+1. Ensure that you have the latest version of [Theos](https://github.com/theos/theos).
+2. Ensure that you have added your developer account in Xcode > Preferences > Accounts tab. This is required for code-signing some binaries used in simject.
+3. Run these commands in a Terminal instance:
 
 ```
 git clone https://github.com/angelXwind/simject.git
 cd simject/
 make setup
 ```
+**Note:** During the process, you will be asked by `sudo` to enter your login password. Please note that it is normal for nothing to be displayed as you type your password.
 
-Now, we will need to create a version of `CydiaSubstrate.framework` that has support for the `x86_64` and `i386` (if you want 32-bit support) architectures.
+Now, we need to create a version of `CydiaSubstrate.framework` that has support for the `x86_64` (64-bit) and/or `i386` (32-bit) architectures.
 
 ### Getting Cydia Substrate to function properly with simject
 
-Unless you want to do it manually, you can use either `substrate.sh` or `substrate-pre10.sh` script to copy over this framework to the target runtime.
+Unless you want to do it manually, you can use either `substrate.sh` or `substrate-pre10.sh` script to copy over this framework to the target runtime. Otherwise, continue reading.
 
-If you use Xcode 10 (and above) and target iOS 12 (and above), you need to use [substitute](https://github.com/coolstar/substitute) instead of Cydia Substrate.
+If you use Xcode 10 (and above) and target iOS 12 (and above), you need to rely on [substitute](https://github.com/coolstar/substitute) rather than cycript's included `CydiaSubstrate.framework`.
 
-Due to the incompatible `libstdc++` in iOS 12 simulator of Xcode 10, the Cydia Substrate binary from cycript that requires this library will not work (it will complain `/usr/lib/libstdc++.6.dylib: mach-o, but not built for iOS simulator`). While Cydia Substrate is not open-sourced to allow us to recompile the binary, we still have substitute as a replacement. You can run the following commands:
+This is due to the incompatible `libstdc++` in iOS 12 simulator of Xcode 10. The Cydia Substrate from cycript that requires `libstdc++` will not work, but will complain `/usr/lib/libstdc++.6.dylib: mach-o, but not built for iOS simulator`. You can run the following commands to compile a working substitute framework:
 
 ```
-# Xcode 10+, iOS 12+
+# Xcode 10+ and iOS 12+
 cd simject/
 git clone https://github.com/PoomSmart/substitute.git
 cd substitute/
@@ -40,7 +38,7 @@ mkdir -p ../CydiaSubstrate.framework
 mv -v out/CydiaSubstrate ../CydiaSubstrate.framework/CydiaSubstrate
 cd .. && rm -rf substitute
 ```
-Otherwise, run these commands in a Terminal instance.
+Otherwise, run these commands to compile a working Cydia Substrate:
 
 ```
 # Xcode 9 and below
@@ -52,13 +50,13 @@ mv -v /tmp/simject_cycript/Cycript.lib/libsubstrate.dylib CydiaSubstrate.framewo
 rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 ```
 
-1. Copy the resulting `CydiaSubstrate.framework` bundle to `/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS$SDK_VERSION.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks/` where `$SDK_VERSION` is your desired SDK version. If `/Library/Frameworks` does not exist, you can just create it manually.
-   * Note: For runtimes bundled in Xcode 9.0+, instead copy the framework to `/Applications/$XCODE.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks/` where `$XCODE` is usually either `Xcode` or `Xcode-beta`.
+1. Copy the resulting `CydiaSubstrate.framework` bundle to `/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS${SDK_VERSION}.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks/` where `${SDK_VERSION}` is your desired SDK version. If `/Library/Frameworks` does not exist, you can just create it manually.
+   * Note: For runtimes bundled in Xcode 9.0+, instead copy the framework to `/Applications/${XCODE}.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks/` where `${XCODE}` is usually either `Xcode` or `Xcode-beta`.
 2. Finally, select your Xcode directory with `sudo xcode-select -s /Applications/Xcode.app` (or wherever Xcode is located on your system).
 
 ### simject usage
 
-1. Place your dynamic libraries and accompanying property lists inside `/opt/simject` to load them in the iOS Simulator. Do not delete `simject.plist` or `simject.dylib`.
+1. Place your dynamic libraries and accompanying property lists inside `/opt/simject` to load them in the iOS Simulator. Do not delete `simject.plist` and `simject.dylib`.
    
 2. Inside the `bin` subdirectory, you will find the `respring_simulator` command-line tool. Execute it to cause booted iOS Simulator(s) to respring and to be able to load tweaks.
 
@@ -75,15 +73,15 @@ rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 
 3. If you want to support both 64-bit and 32-bit iOS Simulators, add `ARCHS = x86_64 i386` to your Makefile. If not (or if you're targeting iOS 11), add `ARCHS = x86_64`.
 
-4. `make` your project and copy `.theos/obj/iphone_simulator/$YOUR_TWEAK.dylib` to `/opt/simject/$YOUR_TWEAK.dylib`.
+4. `make` your project and copy `.theos/obj/iphone_simulator/${YOUR_TWEAK}.dylib` to `/opt/simject/${YOUR_TWEAK}.dylib`.
 
-5. If there is already `/opt/simject/$YOUR_TWEAK.dylib`, you have to delete it first before copying.
+5. If there is already `/opt/simject/${YOUR_TWEAK}.dylib`, you have to delete it first before copying.
 
-6. Also make sure to copy `$YOUR_TWEAK.plist` to `/opt/simject/$YOUR_TWEAK.plist`. simject will not load your tweak if you miss this step!
+6. Also make sure to copy `${YOUR_TWEAK}.plist` to `/opt/simject/${YOUR_TWEAK}.plist`. simject will not load your tweak if you miss this step!
 
 7. An example tweak project is available in the `simjectExampleTweak/` subfolder. Use it as reference if you want. Its Makefile is also written so that you can just run `make setup` to copy over the dylib and its plist automatically.
 
-8. If you encountered a problem while signing dylibs: `error: The specified item could not be found in the keychain.`, you can try to resolve it by following [this](https://github.com/angelXwind/simject/issues/43#issuecomment-441659203) or [this](https://github.com/angelXwind/simject/issues/42#issuecomment-440920466).
+8. If you encountered a problem while signing dylibs: `error: The specified item could not be found in the keychain.`, you can try to fix it by following [this](https://github.com/angelXwind/simject/issues/43#issuecomment-441659203) or [this](https://github.com/angelXwind/simject/issues/42#issuecomment-440920466).
 
 ### Final notes
 
