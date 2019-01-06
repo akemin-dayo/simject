@@ -20,7 +20,7 @@ Now, we need to create a version of `CydiaSubstrate.framework` that has support 
 
 ### Getting Cydia Substrate to function properly with simject
 
-Unless you want to do it manually, you can use either `substrate.sh` or `substrate-pre10.sh` script to copy over this framework to the target runtime. Otherwise, continue reading.
+Unless you want to do it manually, you can use `installsubstrate.sh` script to symlink `CydiaSubstrate.framework` to the appropriate directory **to every iOS runtime**. Otherwise, continue reading.
 
 If you use Xcode 10 (and above) and target iOS 12 (and above), you need to rely on [substitute](https://github.com/coolstar/substitute) rather than cycript's included `CydiaSubstrate.framework`.
 
@@ -52,7 +52,8 @@ rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 
 1. Copy the resulting `CydiaSubstrate.framework` bundle to `/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS${SDK_VERSION}.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks/` where `${SDK_VERSION}` is your desired SDK version. If `/Library/Frameworks` does not exist, you can just create it manually.
    * Note: For runtimes bundled in Xcode 9.0+, instead copy the framework to `/Applications/${XCODE}.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks/` where `${XCODE}` is usually either `Xcode` or `Xcode-beta`.
-2. Finally, select your Xcode directory with `sudo xcode-select -s /Applications/Xcode.app` (or wherever Xcode is located on your system).
+2. Note that, from 1., you can symlink insteading copying `CydiaSubstrate.framework` to multiple places. This is what `installsubstrate.sh` does to ease your life.
+3. Finally, select your Xcode directory with `sudo xcode-select -s /Applications/Xcode.app` (or wherever Xcode is located on your system).
 
 ### simject usage
 
