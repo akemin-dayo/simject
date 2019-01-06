@@ -29,7 +29,7 @@ SJ_FW_PATH=/opt/simject/Frameworks
 mkdir -p ${SJ_FW_PATH}
 cd ${SJ_FW_PATH}
 
-if [[ $1 = "copy" ]];then
+if [[ $1 = "link" ]];then
     if [[ ! -d CydiaSubstrate.framework ]];then
         echo "Error: CydiaSubstrate.framework not found in ${SJ_FW_PATH}"
         exit 1
