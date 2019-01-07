@@ -6,8 +6,8 @@ if [ "$EUID" -ne 0 ];then
 fi
 
 if [[ -z $1 ]];then
-	echo "Error: Substrate type must be specified\n"
-	echo "If you target iOS 12+ (of Xcode 10+), you must run the following:\n"
+    echo "Error: Substrate type must be specified\n"
+    echo "If you target iOS 12+ (of Xcode 10+), you must run the following:\n"
     echo "\tsudo ./installsubstrate.sh subst\n"
     echo "This will install Substitute\n"
     echo "Otherwise, you can run:\n"
@@ -15,14 +15,16 @@ if [[ -z $1 ]];then
     echo "This will install cycript's CydiaSubstrate\n"
     echo "If you only want to symlink CydiaSubstrate.framework to new iOS runtimes, you can run:\n"
     echo "\tsudo ./installsubstrate.sh link\n"
-	exit 1
+    exit 1
 fi
 
 SJ_RUNTIME_ROOT_PREFIX=/Library/Developer/CoreSimulator/Profiles/Runtimes
 SJ_RUNTIME_ROOT_10=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot
 
+XCODE10=0
 if [[ -d "${SJ_RUNTIME_ROOT_10}" ]];then
     echo "Notice: Detected Xcode 10+ in the system"
+    XCODE10=1
 fi
 
 SJ_FW_PATH=/opt/simject/Frameworks
@@ -60,10 +62,12 @@ fi
 
 echo "Symlink CydiaSubstrate.framework for all installed iOS runtimes..."
 
-echo "Symlink to ${SJ_RUNTIME_ROOT_10}"
-mkdir -p "${SJ_RUNTIME_ROOT_10}/Library/Frameworks"
-rm -rf "${SJ_RUNTIME_ROOT_10}/Library/Frameworks/CydiaSubstrate.framework"
-ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_10}/Library/Frameworks/"
+if [ $XCODE10 -eq 1 ];then
+    echo "Symlink to ${SJ_RUNTIME_ROOT_10}"
+    mkdir -p "${SJ_RUNTIME_ROOT_10}/Library/Frameworks"
+    rm -rf "${SJ_RUNTIME_ROOT_10}/Library/Frameworks/CydiaSubstrate.framework"
+    ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_10}/Library/Frameworks/"
+fi
 
 OIFS="$IFS"
 IFS=$'\n'
