@@ -89,7 +89,7 @@ void inject(const char *uuid, const char *device, BOOL _exit) {
 		} else {
 			safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", uuid] UTF8String]);
 			safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv __XPC_DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", uuid] UTF8String]);
-            safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv CG_CONTEXT_SHOW_BACKTRACE 1", uuid] UTF8String]);
+			safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv CG_CONTEXT_SHOW_BACKTRACE 1", uuid] UTF8String]);
 			safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl stop com.apple.backboardd", uuid] UTF8String]);
 		}
 		exit(EXIT_SUCCESS);
