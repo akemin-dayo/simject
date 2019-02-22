@@ -22,10 +22,8 @@ SJ_RUNTIME_ROOT_PREFIX=/Library/Developer/CoreSimulator/Profiles/Runtimes
 SJ_RUNTIME_ROOT_10=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot
 SJ_RUNTIME_ROOT_10_BETA=/Applications/Xcode-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot
 
-XCODE10=0
 if [[ -d "${SJ_RUNTIME_ROOT_10}" ]] || [[ -d "${SJ_RUNTIME_ROOT_10_BETA}" ]];then
     echo "Notice: Detected Xcode 10+ in the system"
-    XCODE10=1
 fi
 
 SJ_FW_PATH=/opt/simject/Frameworks
