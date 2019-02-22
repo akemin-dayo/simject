@@ -20,9 +20,10 @@ fi
 
 SJ_RUNTIME_ROOT_PREFIX=/Library/Developer/CoreSimulator/Profiles/Runtimes
 SJ_RUNTIME_ROOT_10=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot
+SJ_RUNTIME_ROOT_10_BETA=/Applications/Xcode-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot
 
 XCODE10=0
-if [[ -d "${SJ_RUNTIME_ROOT_10}" ]];then
+if [[ -d "${SJ_RUNTIME_ROOT_10}" ]] || [[ -d "${SJ_RUNTIME_ROOT_10_BETA}" ]];then
     echo "Notice: Detected Xcode 10+ in the system"
     XCODE10=1
 fi
@@ -62,11 +63,18 @@ fi
 
 echo "Symlink CydiaSubstrate.framework for all installed iOS runtimes..."
 
-if [ $XCODE10 -eq 1 ];then
+if [[ -d "${SJ_RUNTIME_ROOT_10}" ]];then
     echo "Symlink to ${SJ_RUNTIME_ROOT_10}"
     mkdir -p "${SJ_RUNTIME_ROOT_10}/Library/Frameworks"
     rm -rf "${SJ_RUNTIME_ROOT_10}/Library/Frameworks/CydiaSubstrate.framework"
     ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_10}/Library/Frameworks/"
+fi
+
+if [[ -d "${SJ_RUNTIME_ROOT_10_BETA}" ]];then
+    echo "Symlink to ${SJ_RUNTIME_ROOT_10_BETA}"
+    mkdir -p "${SJ_RUNTIME_ROOT_10_BETA}/Library/Frameworks"
+    rm -rf "${SJ_RUNTIME_ROOT_10_BETA}/Library/Frameworks/CydiaSubstrate.framework"
+    ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_10_BETA}/Library/Frameworks/"
 fi
 
 OIFS="$IFS"
