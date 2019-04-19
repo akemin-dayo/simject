@@ -213,6 +213,10 @@ int main(int argc, char *const argv[]) {
 			exit(EXIT_FAILURE);
 		}
 		NSArray *runtime = devices[[NSString stringWithFormat:@"iOS %s", version]];
+		if (runtime == nil) {
+			version[strlen(version) - 2] = '-';
+			runtime = devices[[NSString stringWithFormat:@"com.apple.CoreSimulator.SimRuntime.iOS-%s", version]];
+		}
 		if (runtime == nil || runtime.count == 0) {
 			printf("ERROR: iOS %s runtime is not installed, or not supported by simject\n", version);
 			exit(EXIT_FAILURE);
