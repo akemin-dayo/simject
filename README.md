@@ -59,11 +59,11 @@ rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 
 1. Place your dynamic libraries and accompanying property lists inside `/opt/simject` to load them in the iOS Simulator. Do not delete `simject.plist` and `simject.dylib`.
    
-2. Inside the `bin` subdirectory, you will find the `respring_simulator` command-line tool. Execute it to cause booted iOS Simulator(s) to respring and to be able to load tweaks.
+2. Inside the `bin` subdirectory, you will find the `resim` command-line tool. Execute it to cause booted iOS Simulator(s) to respring and to be able to load tweaks.
 
-3. IMPORTANT: Please note that you will need to run `respring_simulator` every time the iOS Simulator reboots or if SpringBoard crashes by itself.
+3. IMPORTANT: Please note that you will need to run `resim` every time the iOS Simulator reboots or if SpringBoard crashes by itself.
 
-4. `respring_simulator` can respring multiple simulators (check its usage notes), provided that the selected Xcode version is 9.0 or above.
+4. `resim` can respring multiple simulators (check its usage notes), provided that the selected Xcode version is 9.0 or above.
 
 5. Happy developing! (And don't make SpringBoard cry *too* hard... it has feelings, too! Probably.)
 

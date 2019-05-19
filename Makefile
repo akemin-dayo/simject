@@ -2,12 +2,12 @@ ARCHS = x86_64
 DEBUG = 0
 
 all::
-	@make -C respring_simulator
+	@make -C resim
 	@make -C simject
 
 clean::
 	@rm -rfv bin
-	@make -C respring_simulator clean
+	@make -C resim clean
 	@make -C simject clean
 
 setup:: clean all

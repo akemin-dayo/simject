@@ -22,8 +22,8 @@ void globalHeader() {
 
 void printUsage() {
 	globalHeader();
-	printf("\nUsage: respring_simulator [options]\n");
-	printf("Example: respring_simulator -d \"iPhone 5\" -v 8.1\n");
+	printf("\nUsage: resimmulator [options]\n");
+	printf("Example: resimmulator -d \"iPhone 5\" -v 8.1\n");
 	printf("\nAvailable options:\n");
 	printf("\t-h    Shows this usage dialog\n");
 	printf("\t-d    Specifies a device type\n");
@@ -33,17 +33,17 @@ void printUsage() {
 	printf("\tall   Resprings all booted iOS Simulators\n");
 	printf("\nExample usages:\n");
 	printf("\tRespring a booted device matching the specified device type and iOS version\n");
-	printf("\t\trespring_simulator -d \"iPhone 5\" -v 8.1\n");
+	printf("\t\tresimmulator -d \"iPhone 5\" -v 8.1\n");
 	printf("\tRespring any booted devices matching the specified iOS version\n");
-	printf("\t\trespring_simulator -v 8.1\n");
+	printf("\t\tresimmulator -v 8.1\n");
 	printf("\tRespring any booted devices matching the specified device type\n");
-	printf("\t\trespring_simulator -d \"iPhone 5\"\n");
+	printf("\t\tresimmulator -d \"iPhone 5\"\n");
 	printf("\tRespring a booted device with the specified UUID\n");
-	printf("\t\trespring_simulator -i 5AA1C45D-DB69-4C52-A75B-E9BE9C7E7770\n");
+	printf("\t\tresimmulator -i 5AA1C45D-DB69-4C52-A75B-E9BE9C7E7770\n");
 	printf("\tRespring all booted iOS Simulators\n");
-	printf("\t\trespring_simulator all\n");
+	printf("\t\tresimmulator all\n");
 	printf("\tRespring an iOS Simulator using the iOS 7 runtime (Xcode <= 6.2)\n");
-	printf("\t\trespring_simulator -l\n");
+	printf("\t\tresimmulator -l\n");
 }
 
 void safe_system(const char *cmd) {
