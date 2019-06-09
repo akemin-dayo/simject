@@ -7,7 +7,8 @@ simject is BSD-licensed. See `LICENSE` for more information.
 ### Setting up the simject environment
 1. Ensure that you have the latest version of [Theos](https://github.com/theos/theos).
 2. Ensure that you have added your developer account in Xcode > Preferences > Accounts tab. This is required for code-signing some binaries used in simject.
-3. Run these commands in a Terminal instance:
+3. Ensure that there is "iOS Development" certificate listed once you clicked on "Manage Certificates", create one if there is not.
+4. Run these commands in a Terminal instance:
 
 ```
 git clone https://github.com/angelXwind/simject.git
