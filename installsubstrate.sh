@@ -21,10 +21,8 @@ fi
 SJ_RUNTIME_ROOT_PREFIX=/Library/Developer/CoreSimulator/Profiles/Runtimes
 SJ_RUNTIME_ROOT_10=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot
 SJ_RUNTIME_ROOT_10_BETA=/Applications/Xcode-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot
-
-if [[ -d "${SJ_RUNTIME_ROOT_10}" ]] || [[ -d "${SJ_RUNTIME_ROOT_10_BETA}" ]];then
-    echo "Notice: Detected Xcode 10+ in the system"
-fi
+SJ_RUNTIME_ROOT_11=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot
+SJ_RUNTIME_ROOT_11_BETA=/Applications/Xcode-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot
 
 SJ_FW_PATH=/opt/simject/Frameworks
 mkdir -p ${SJ_FW_PATH}
@@ -73,6 +71,20 @@ if [[ -d "${SJ_RUNTIME_ROOT_10_BETA}" ]];then
     mkdir -p "${SJ_RUNTIME_ROOT_10_BETA}/Library/Frameworks"
     rm -rf "${SJ_RUNTIME_ROOT_10_BETA}/Library/Frameworks/CydiaSubstrate.framework"
     ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_10_BETA}/Library/Frameworks/"
+fi
+
+if [[ -d "${SJ_RUNTIME_ROOT_11}" ]];then
+    echo "Symlink to ${SJ_RUNTIME_ROOT_11}"
+    mkdir -p "${SJ_RUNTIME_ROOT_11}/Library/Frameworks"
+    rm -rf "${SJ_RUNTIME_ROOT_11}/Library/Frameworks/CydiaSubstrate.framework"
+    ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_11}/Library/Frameworks/"
+fi
+
+if [[ -d "${SJ_RUNTIME_ROOT_11_BETA}" ]];then
+    echo "Symlink to ${SJ_RUNTIME_ROOT_11_BETA}"
+    mkdir -p "${SJ_RUNTIME_ROOT_11_BETA}/Library/Frameworks"
+    rm -rf "${SJ_RUNTIME_ROOT_11_BETA}/Library/Frameworks/CydiaSubstrate.framework"
+    ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_11_BETA}/Library/Frameworks/"
 fi
 
 OIFS="$IFS"
