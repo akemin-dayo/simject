@@ -97,7 +97,6 @@ NSArray *simjectGenerateDylibList() {
 	blackListForFLEX = @[@"com.apple.Search.framework", @"com.apple.accessibility.AccessibilityUIServer", @"com.apple.backboardd"];
 	// Inject any dylib meant to be run for this application
 	for (NSString *dylib in simjectGenerateDylibList()) {
-		HBLogDebug(@"Injecting %@ into %@", dylib, NSBundle.mainBundle.bundleIdentifier);
-		dlopen([dylib UTF8String], RTLD_LAZY | RTLD_GLOBAL);
+		HBLogDebug(@"Injecting %@ into %@: %d", dylib, NSBundle.mainBundle.bundleIdentifier, dlopen([dylib UTF8String], RTLD_LAZY | RTLD_GLOBAL) != NULL);
 	}
 }
