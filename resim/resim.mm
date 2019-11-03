@@ -15,15 +15,15 @@ BOOL didHaveGlobalHeader = NO;
 
 void globalHeader() {
 	if (!didHaveGlobalHeader) {
-		printf("respring_simulator (C) 2016-2018 Karen/あけみ (angelXwind)\n");
+		printf("resim (C) 2016-2019 Karen/あけみ (angelXwind)\n");
 		didHaveGlobalHeader = YES;
 	}
 }
 
 void printUsage() {
 	globalHeader();
-	printf("\nUsage: resimmulator [options]\n");
-	printf("Example: resimmulator -d \"iPhone 5\" -v 8.1\n");
+	printf("\nUsage: resim [options]\n");
+	printf("Example: resim -d \"iPhone 5\" -v 8.1\n");
 	printf("\nAvailable options:\n");
 	printf("\t-h    Shows this usage dialog\n");
 	printf("\t-d    Specifies a device type\n");
@@ -33,17 +33,17 @@ void printUsage() {
 	printf("\tall   Resprings all booted iOS Simulators\n");
 	printf("\nExample usages:\n");
 	printf("\tRespring a booted device matching the specified device type and iOS version\n");
-	printf("\t\tresimmulator -d \"iPhone 5\" -v 8.1\n");
+	printf("\t\tresim -d \"iPhone 5\" -v 8.1\n");
 	printf("\tRespring any booted devices matching the specified iOS version\n");
-	printf("\t\tresimmulator -v 8.1\n");
+	printf("\t\tresim -v 8.1\n");
 	printf("\tRespring any booted devices matching the specified device type\n");
-	printf("\t\tresimmulator -d \"iPhone 5\"\n");
+	printf("\t\tresim -d \"iPhone 5\"\n");
 	printf("\tRespring a booted device with the specified UUID\n");
-	printf("\t\tresimmulator -i 5AA1C45D-DB69-4C52-A75B-E9BE9C7E7770\n");
+	printf("\t\tresim -i 5AA1C45D-DB69-4C52-A75B-E9BE9C7E7770\n");
 	printf("\tRespring all booted iOS Simulators\n");
-	printf("\t\tresimmulator all\n");
+	printf("\t\tresim all\n");
 	printf("\tRespring an iOS Simulator using the iOS 7 runtime (Xcode <= 6.2)\n");
-	printf("\t\tresimmulator -l\n");
+	printf("\t\tresim -l\n");
 }
 
 void safe_system(const char *cmd) {
@@ -100,7 +100,7 @@ void inject(const char *uuid, const char *device, const char *version, BOOL _exi
 		} else {
 			safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", uuid] UTF8String]);
 			safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv __XPC_DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", uuid] UTF8String]);
-			safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl stop com.apple.backboardd", uuid] UTF8String]);
+			safe_system([[NSString stringWithFormat:@"export SIMCTL_CHILD_DYLD_INSERT_LIBRARIES=/opt/simject/simject.dylib; xcrun simctl spawn %s launchctl stop com.apple.backboardd", uuid] UTF8String]);
 		}
 		exit(EXIT_SUCCESS);
 	} else {
