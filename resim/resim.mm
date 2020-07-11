@@ -71,7 +71,7 @@ string exec(const char *cmd) {
 
 void injectHeader() {
 	globalHeader();
-	printf("Injecting appropriate dynamic libraries from /opt/simject...\n");
+	printf("Injecting appropriate dynamic libraries from %s...\n", [DYLIB_DIR UTF8String]);
 }
 
 void inject(const char *uuid, const char *device, const char *version, BOOL _exit, BOOL keepRunning) {
@@ -96,12 +96,12 @@ void inject(const char *uuid, const char *device, const char *version, BOOL _exi
 				}
 				uuid = strdup(suuid.c_str());
 			}
-			safe_system([[NSString stringWithFormat:@"plutil -replace bootstrap.child.DYLD_INSERT_LIBRARIES -string /opt/simject/simject.dylib %@/Library/Developer/CoreSimulator/Devices/%@/data/var/run/launchd_bootstrap.plist -s", NSHomeDirectory(), @(uuid)] UTF8String]);
+			safe_system([[NSString stringWithFormat:@"plutil -replace bootstrap.child.DYLD_INSERT_LIBRARIES -string %@/simject.dylib %@/Library/Developer/CoreSimulator/Devices/%@/data/var/run/launchd_bootstrap.plist -s", DYLIB_DIR, NSHomeDirectory(), @(uuid)] UTF8String]);
 			safe_system("killall launchd_sim");
 		} else {
-			safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", uuid] UTF8String]);
-			safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv __XPC_DYLD_INSERT_LIBRARIES /opt/simject/simject.dylib", uuid] UTF8String]);
-			safe_system([[NSString stringWithFormat:@"export SIMCTL_CHILD_DYLD_INSERT_LIBRARIES=/opt/simject/simject.dylib; xcrun simctl spawn %s launchctl stop com.apple.backboardd", uuid] UTF8String]);
+			safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv DYLD_INSERT_LIBRARIES %@/simject.dylib", uuid, DYLIB_DIR] UTF8String]);
+			safe_system([[NSString stringWithFormat:@"xcrun simctl spawn %s launchctl setenv __XPC_DYLD_INSERT_LIBRARIES %@/simject.dylib", uuid, DYLIB_DIR] UTF8String]);
+			safe_system([[NSString stringWithFormat:@"export SIMCTL_CHILD_DYLD_INSERT_LIBRARIES=%@/simject.dylib; xcrun simctl spawn %s launchctl stop com.apple.backboardd", DYLIB_DIR, uuid] UTF8String]);
 		}
 		exit(EXIT_SUCCESS);
 	} else {
