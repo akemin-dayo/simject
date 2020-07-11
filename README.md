@@ -5,16 +5,16 @@ simject is a command-line tool and iOS dynamic library that allows iOS tweak dev
 simject is BSD-licensed. See `LICENSE` for more information.
 
 ### Setting up the simject environment
-1. Ensure that you have the latest version of [Theos](https://github.com/theos/theos).
-2. Ensure that you have added your developer account in Xcode > Preferences > Accounts tab. This is required for code-signing some binaries used in simject.
-3. Ensure that there is "iOS Development" certificate listed once you clicked on "Manage Certificates", create one if there is not.
-4. Run these commands in a Terminal instance:
+1. Ensure that you have added your developer account in Xcode > Preferences > Accounts tab. This is required for code-signing some binaries used in simject.
+2. Ensure that there is "iOS Development" certificate listed once you clicked on "Manage Certificates", create one if there is not.
+3. Run these commands in a Terminal instance:
 
 ```
 git clone https://github.com/angelXwind/simject.git
 cd simject/
 make setup
 ```
+
 **Note:** During the process, you will be asked by `sudo` to enter your login password. Please note that it is normal for nothing to be displayed as you type your password.
 
 Now, we need to create a version of `CydiaSubstrate.framework` that has support for the `x86_64` (64-bit) and/or `i386` (32-bit) architectures.
