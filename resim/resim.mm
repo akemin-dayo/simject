@@ -7,6 +7,7 @@
 #include <string>
 #include <array>
 #include <regex>
+#include <Foundation/Foundation.h>
 
 using namespace std;
 
