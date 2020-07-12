@@ -1,5 +1,5 @@
-export PREFIX = \033[1;34m>>\033[0m
-export SUB_PREFIX = \033[1;34m>>>\033[0m
+export PREFIX = \033[1;36m>>\033[0m
+export SUB_PREFIX = \033[1;36m>>>\033[0m
 export DONE_PREFIX = \033[1;32m>>\033[0m
 
 ifndef DYLIB_DIR
