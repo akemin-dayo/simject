@@ -17,7 +17,7 @@ clean::
 
 build : resim.mm
 	@mkdir -p out
-	@echo "$(PREFIX) Compiling Resim for $(shell clang -print-target-triple)"
+	@echo "$(PREFIX) Compiling resim for $(shell clang -print-target-triple)"
 	@echo "$(SUB_PREFIX) Target Directory is $(DYLIB_DIR)"
 	@$(CXX) resim.mm $(ARCHFLAG) $(SYSROOTFLAG) -framework Foundation -DDYLIB_DIR=@\"$(DYLIB_DIR)\" -o out/resim
 	@echo "$(SUB_PREFIX) Signing..."
