@@ -24,7 +24,7 @@ build : simject.m
 	@mkdir -p out
 	@echo "$(PREFIX) Compiling simject for $(TRIPLE)"
 	@echo "$(SUB_PREFIX) Using SDK at $(SYSROOT)"
-	@echo "$(SUB_PREFIX) Target Directory is $(DYLIB_DIR)"
+	@echo "$(SUB_PREFIX) Target directory is $(DYLIB_DIR)"
 	@$(CC) simject.m $(ARCHFLAG) -framework Foundation -isysroot $(SYSROOT) -target $(TRIPLE) -DDYLIB_DIR=@\"$(DYLIB_DIR)\" -dynamiclib -o out/simject.dylib
 	@echo "$(SUB_PREFIX) Signing..."
 	@codesign -f -s - out/simject.dylib
