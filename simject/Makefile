@@ -22,7 +22,7 @@ clean::
 
 build : simject.m
 	@mkdir -p out
-	@echo "$(PREFIX) Compiling Simject for $(TRIPLE)"
+	@echo "$(PREFIX) Compiling simject for $(TRIPLE)"
 	@echo "$(SUB_PREFIX) Using SDK at $(SYSROOT)"
 	@echo "$(SUB_PREFIX) Target Directory is $(DYLIB_DIR)"
 	@$(CC) simject.m $(ARCHFLAG) -framework Foundation -isysroot $(SYSROOT) -target $(TRIPLE) -DDYLIB_DIR=@\"$(DYLIB_DIR)\" -dynamiclib -o out/simject.dylib
