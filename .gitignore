@@ -8,3 +8,4 @@ _/*
 obj/*
 bin/*
 .DS_Store
+.theos
