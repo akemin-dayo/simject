@@ -1,15 +1,27 @@
-TARGET = macosx:clang::10.9
-ARCHS = x86_64
+ifndef DYLIB_DIR
+  DYLIB_DIR = /opt/simject
+endif
 
-include $(THEOS)/makefiles/common.mk
+ifndef ARCH
+  ARCHFLAG = 
+else
+  ARCHFLAG = -arch $(ARCH)
+endif
 
-TOOL_NAME = resim
-resim_FILES = resim.mm
-resim_CFLAGS = -Wno-deprecated-declarations
+ifdef SYSROOT
+  SYSROOTFLAG = -isysroot $(SYSROOT)
+endif
 
-include $(THEOS_MAKE_PATH)/tool.mk
+clean::
+	-@rm -r out/
 
-after-all::
-	@echo "Copying binaries..."
+build : resim.mm
+	@mkdir -p out
+	@echo "$(PREFIX) Compiling resim for $(shell clang -print-target-triple)"
+	@echo "$(SUB_PREFIX) Target directory is $(DYLIB_DIR)"
+	@$(CXX) resim.mm $(ARCHFLAG) $(SYSROOTFLAG) -framework Foundation -DDYLIB_DIR=@\"$(DYLIB_DIR)\" -o out/resim
+	@echo "$(SUB_PREFIX) Signing..."
+	@codesign -f -s - out/resim
+	@echo "$(SUB_PREFIX) Copying library..."
 	@mkdir -p ../bin
-	@cp -v $(THEOS_OBJ_DIR)/resim ../bin/
+	@cp out/resim ../bin

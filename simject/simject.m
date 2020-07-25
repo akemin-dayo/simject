@@ -1,5 +1,8 @@
-#import "../simject.h"
+#import <Foundation/Foundation.h>
 #import <dlfcn.h>
+#import <os/log.h>
+
+#define dylibDir DYLIB_DIR
 
 static NSArray *blackListForFLEX;
 
@@ -90,7 +93,7 @@ NSArray *simjectGenerateDylibList() {
 	return dylibsToInject;
 }
 
-%ctor {
+static __attribute__((constructor)) void SimjectInit (int argc, char **argv, char **envp) {
 	// Since many iOS tweak developers use FLEXible (or some variant of that tweak) to inspect the iOS Simulator...
 	// There are some processes that can crash when FLEXible is injected into them, significantly decreasing overall performance.
 	// These processes do indeed load UIKit as a library, but they do not actually present a GUI so there is no point in injecting FLEXible into them.
@@ -98,7 +101,7 @@ NSArray *simjectGenerateDylibList() {
 	// Inject any dylib meant to be run for this application
 	for (NSString *dylib in simjectGenerateDylibList()) {
 		BOOL success = dlopen([dylib UTF8String], RTLD_LAZY | RTLD_GLOBAL) != NULL;
-		HBLogDebug(@"Injecting %@ into %@: %d.", dylib, NSBundle.mainBundle.bundleIdentifier, success);
-		if (!success) HBLogError(@"Couldn't inject %@ into %@:\n%s.", dylib, NSBundle.mainBundle.bundleIdentifier, dlerror());
+		os_log_info(OS_LOG_DEFAULT, "Injecting %s into %s: %d.", [dylib UTF8String], [NSBundle.mainBundle.bundleIdentifier UTF8String], success);
+		if (!success) os_log_error(OS_LOG_DEFAULT, "Couldn't inject %s into %s:\n%s.", [dylib UTF8String], [NSBundle.mainBundle.bundleIdentifier UTF8String], dlerror());
 	}
 }

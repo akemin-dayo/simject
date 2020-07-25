@@ -1,7 +1,5 @@
 *.o
-.theos/*
-*/.theos/*
-**/.theos/*
+*/out/*
 debs/*
 *.deb
 *.dylib
