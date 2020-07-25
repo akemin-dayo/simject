@@ -1,6 +1,4 @@
 #import "../simject.h"
-#import <Foundation/Foundation.h>
-#import <HBLog.h>
 #import <dlfcn.h>
 
 static NSArray *blackListForFLEX;
