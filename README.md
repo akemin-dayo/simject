@@ -85,7 +85,7 @@ rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 
 8. If you encountered a problem while signing dylibs: `error: The specified item could not be found in the keychain.`, you can try to fix it by following [this](https://github.com/angelXwind/simject/issues/43#issuecomment-441659203) or [this](https://github.com/angelXwind/simject/issues/42#issuecomment-440920466).
 
-9. If you encoutered a problem while signing dylibs: `iPhone Developer: no identity found`, check out [this comment by iAlex11](https://github.com/angelXwind/simject/issues/55#issuecomment-615894757) (a neat way to get your identity is to run `security find-identity -p codesigning -v | head -n 1 | xargs | cut -d " " -f 2`).
+9. If you encountered a problem while signing dylibs: `iPhone Developer: no identity found`, check out [this comment by iAlex11](https://github.com/angelXwind/simject/issues/55#issuecomment-615894757) (a neat way to get your identity is to run `security find-identity -p codesigning -v | head -n 1 | xargs | cut -d " " -f 2`).
 
 ### Final notes
 
