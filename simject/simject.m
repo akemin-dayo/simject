@@ -40,7 +40,8 @@ NSArray *simjectGenerateDylibList() {
 		// This boolean indicates whether or not the dylib has already been injected
 		BOOL isInjected = NO;
 		// If supported iOS versions are specified within the plist, we check those first
-		NSArray *supportedVersions = filter[@"CoreFoundationVersion"];
+		// Note: Whether or not the iOS versions are in doubles or strings, this shall pass, unlike CydiaSubstrate that expects doubles
+		NSArray *supportedVersions = filter[@"Filter"][@"CoreFoundationVersion"];
 		if (supportedVersions) {
 			if (supportedVersions.count != 1 && supportedVersions.count != 2) {
 				continue; // Supported versions are in the wrong format, we should skip
