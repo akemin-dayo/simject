@@ -36,6 +36,7 @@ setup:: all
 	@$(NEED_ROOT) mkdir -p $(DYLIB_DIR)
 	@$(NEED_ROOT) chown -R $(USER) $(DYLIB_DIR)
 	@echo "$(PREFIX) Copying Tweak Loader to $(DYLIB_DIR)"
+	@rm -f $(DYLIB_DIR)/simject.dylib
 	@cp bin/simject.dylib $(DYLIB_DIR)
 	@cp simject/simject.plist $(DYLIB_DIR)
 	@echo "$(PREFIX) Installing resim"
