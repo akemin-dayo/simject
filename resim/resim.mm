@@ -12,9 +12,7 @@
 
 using namespace std;
 
-#ifdef IOS7_SUPPORT
 BOOL iOS7 = NO;
-#endif
 BOOL didHaveGlobalHeader = NO;
 
 void globalHeader() {
@@ -274,9 +272,6 @@ int main(int argc, char *const argv[]) {
 				exit(EXIT_FAILURE);
 		}
 	}
-#ifndef IOS7_SUPPORT
-	BOOL iOS7 = NO;
-#endif
 	if (uuidFlag || deviceFlag || versionFlag || iOS7) {
 		if (xcodeVersion && xcodeVersion < 800.0) {
 			printf("WARNING: The selected Xcode version does not support multiple running iOS Simulator instances simultaneously. Booting this device may cause any other existing instances of the iOS Simulator to terminate.\n");
