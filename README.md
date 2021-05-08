@@ -10,7 +10,7 @@ simject is BSD-licensed. See `LICENSE` for more information.
 3. Run these commands in a Terminal instance:
 
 ```
-git clone https://github.com/angelXwind/simject.git
+git clone https://github.com/akemin-dayo/simject.git
 cd simject/
 make setup
 ```
@@ -23,7 +23,7 @@ Now, we need to create a version of `CydiaSubstrate.framework` that has support 
 
 Unless you want to do it manually, you can use `installsubstrate.sh` script to symlink `CydiaSubstrate.framework` to the appropriate directory **to every iOS runtime**. Otherwise, continue reading.
 
-If you use Xcode 10 (and above) and target iOS 12 (and above), you need to rely on [substitute](https://github.com/coolstar/substitute) rather than cycript's included `CydiaSubstrate.framework`.
+If you use Xcode 10 (and above) and target iOS 12 (and above), you need to rely on [substitute](https://github.com/sbingner/substitute) rather than cycript's included `CydiaSubstrate.framework`.
 
 This is due to the incompatible `libstdc++` in iOS 12 simulator of Xcode 10. The Cydia Substrate from cycript that requires `libstdc++` will not work, but will complain `/usr/lib/libstdc++.6.dylib: mach-o, but not built for iOS simulator`. You can run the following commands to compile a working substitute framework:
 
