@@ -10,7 +10,7 @@ PACKAGE_VERSION = $(THEOS_PACKAGE_BASE_VERSION)
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = simjectExampleTweak
-simjectExampleTweak_FILES = simjectExampleTweak.xm
+simjectExampleTweak_FILES = simjectExampleTweak.x
 simjectExampleTweak_CFLAGS = -fobjc-arc -Wno-deprecated-declarations
 
 include $(THEOS_MAKE_PATH)/tweak.mk
