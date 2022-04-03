@@ -17,7 +17,7 @@ BOOL didHaveGlobalHeader = NO;
 
 void globalHeader() {
 	if (!didHaveGlobalHeader) {
-		printf("resim (C) 2016-2021 Karen/あけみ (angelXwind)\n");
+		printf("resim (C) 2016-2022 Karen/あけみ (angelXwind)\n");
 		didHaveGlobalHeader = YES;
 	}
 }
