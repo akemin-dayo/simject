@@ -97,11 +97,10 @@ then
     ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_11_BETA}/Library/Frameworks/"
 fi
 
-OIFS="$IFS"
-IFS=$'\n'
-
 if [[ -d "${SJ_RUNTIME_ROOT_PREFIX}" ]]
 then
+    OIFS="$IFS"
+    IFS=$'\n'
     for SJ_runtime in `find ${SJ_RUNTIME_ROOT_PREFIX} -type d -maxdepth 1 -name "*.simruntime"`
     do
         echo "Symlink to ${SJ_runtime}"
@@ -109,8 +108,7 @@ then
         rm -rf "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks/CydiaSubstrate.framework"
         ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks/"
     done
+    IFS="$OIFS"
 fi
-
-IFS="$OIFS"
 
 cd ..
