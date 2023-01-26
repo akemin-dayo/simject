@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/usr/bin/env bash
+
+set -e
 
 if [ "$EUID" -ne 0 ]
 then
@@ -40,7 +42,7 @@ then
 elif [[ $1 = "subst" ]]
 then
     echo "Installing Substitute..."
-    rm -rf CydiaSubstrate.framework
+    rm -rf substitute CydiaSubstrate.framework
     git clone https://github.com/PoomSmart/substitute.git
     cd substitute/
     ./configure --xcode-sdk=iphonesimulator --xcode-archs=x86_64 && make

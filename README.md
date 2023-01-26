@@ -15,10 +15,10 @@ simject is BSD-licensed. See `LICENSE` for more information.
 sudo xcode-select -s /Applications/Xcode.app
 git clone https://github.com/akemin-dayo/simject.git
 cd simject/
-make setup
+make all
 ```
 
-**Note:** During the process, you will be asked by `sudo` to enter your login password. Please note that it is normal for nothing to be displayed as you type your password.
+**Note:** During the process, you may be asked by `sudo` to enter your login password. Please note that it is normal for nothing to be displayed as you type your password.
 
 Now, we need to create a version of `CydiaSubstrate.framework` that has support for the `x86_64` (64-bit) and/or `i386` (32-bit) architectures.
 
