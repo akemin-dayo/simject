@@ -45,7 +45,7 @@ then
     rm -rf substitute CydiaSubstrate.framework
     git clone https://github.com/PoomSmart/substitute.git
     cd substitute/
-    ./configure --xcode-sdk=iphonesimulator --xcode-archs=x86_64 && make
+    ./configure --xcode-sdk=iphonesimulator --xcode-archs=$(uname -m) && make
     mv out/libsubstitute.dylib out/CydiaSubstrate
     codesign -f -s - out/CydiaSubstrate
     mkdir -p ../CydiaSubstrate.framework
@@ -103,7 +103,7 @@ if [[ -d "${SJ_RUNTIME_ROOT_PREFIX}" ]]
 then
     OIFS="$IFS"
     IFS=$'\n'
-    for SJ_runtime in `find ${SJ_RUNTIME_ROOT_PREFIX} -type d -maxdepth 1 -name "*.simruntime"`
+    for SJ_runtime in $(find ${SJ_RUNTIME_ROOT_PREFIX} -type d -maxdepth 1 -name "*.simruntime")
     do
         echo "Symlink to ${SJ_runtime}"
         mkdir -p "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks"
