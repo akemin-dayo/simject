@@ -20,11 +20,11 @@ make all
 
 **Note:** During the process, you may be asked by `sudo` to enter your login password. Please note that it is normal for nothing to be displayed as you type your password.
 
-Now, we need to create a version of `CydiaSubstrate.framework` that has support for the `x86_64` (64-bit) and/or `i386` (32-bit) architectures.
+Now, we need to create a version of `CydiaSubstrate.framework` that has support for the `x86_64` or `arm64` (64-bit) and/or `i386` (32-bit) architectures.
 
 ### Getting Cydia Substrate to function properly with simject
 
-Unless you want to do it manually, you can use `installsubstrate.sh` script to symlink `CydiaSubstrate.framework` to the appropriate directory **to every iOS runtime**. Otherwise, continue reading.
+**Unless you want to do it manually**, you can use [`installsubstrate.sh`](./installsubstrate.sh) script to symlink `CydiaSubstrate.framework` to the appropriate directory **to every iOS runtime**. Otherwise, continue reading.
 
 If you use Xcode 10 (and above) and target iOS 12 (and above), you need to rely on [substitute](https://github.com/sbingner/substitute) rather than cycript's included `CydiaSubstrate.framework`.
 
@@ -56,8 +56,8 @@ rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 
 1. Copy the resulting `CydiaSubstrate.framework` bundle to `/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS${SDK_VERSION}.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks/` where `${SDK_VERSION}` is your desired SDK version. If `/Library/Frameworks` does not exist, you can create it manually.
    * Let `${XCODE}` be `Xcode` or `Xcode-beta`.
-   * For runtimes bundled in Xcode 9 - 10, copy the framework to `/Applications/${XCODE}.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks/`.
    * For runtimes bundled in Xcode 11+, copy the framework to `/Applications/${XCODE}.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks/`.
+   * For runtimes bundled in Xcode 9 - 10, copy the framework to `/Applications/${XCODE}.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks/`.
 
 2. Note that, from the step 1, you can symlink instead of copying `CydiaSubstrate.framework` to multiple places. This is what `installsubstrate.sh` does to ease your life.
 
@@ -77,9 +77,13 @@ rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 
 1. Open your project's `Makefile`.
 
-2. Change your `TARGET` variable to `TARGET = simulator:clang::7.0` (a must for Xcode 10, with 64-bit compatibility) or `TARGET = simulator:clang::5.0` otherwise (with 32-bit compatibility). Note that this is just an example, you can change the SDK version used and iOS version to target if you wish.
+2. Set the correct `TARGET` for your machine.
+   * **For Intel Mac:** Set `TARGET = simulator:clang::7.0` (a must for Xcode 10, with 64-bit compatibility) or `TARGET = simulator:clang::5.0` otherwise (with 32-bit compatibility). Note that this is just an example, you can change the SDK version used and iOS version to target if you wish.
+   * **For Apple Silicon Mac:** Set `TARGET = simulator:clang::12.0`.
 
-3. If you want to support both 64-bit and 32-bit iOS Simulators, set `ARCHS = x86_64 i386` to your Makefile. If not (or if you're targeting iOS 11), set `ARCHS = x86_64`.
+3. Set the correct `ARCHS` for your machine.
+   * **For Intel Mac:** If you want to support both 64-bit and 32-bit iOS Simulators, set `ARCHS = x86_64 i386` to your Makefile. If not (or if you're targeting iOS 11), set `ARCHS = x86_64`.
+   * **For Apple Silicon Mac:** Set `ARCHS = arm64`. There is no 32-bit support.
 
 4. `make` your project and copy `.theos/obj/iphone_simulator/${YOUR_TWEAK}.dylib` to `/opt/simject/${YOUR_TWEAK}.dylib`.
 
