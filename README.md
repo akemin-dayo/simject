@@ -35,7 +35,7 @@ This is due to the incompatible `libstdc++` in iOS 12 simulator of Xcode 10. The
 cd simject/
 git clone https://github.com/PoomSmart/substitute.git
 cd substitute/
-./configure --xcode-sdk=iphonesimulator --xcode-archs=x86_64 && make
+./configure --xcode-sdk=iphonesimulator --xcode-archs=$(uname -m) && make
 mv -v out/libsubstitute.dylib out/CydiaSubstrate
 codesign -f -s - out/CydiaSubstrate
 mkdir -p ../CydiaSubstrate.framework
