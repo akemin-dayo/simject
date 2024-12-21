@@ -6,13 +6,13 @@ if [[ -z $1 ]]
 then
     echo "Error: Substrate type must be specified\n"
     echo "If you target iOS 12+ (of Xcode 10+), you must run the following:\n"
-    echo "\tsudo ./installsubstrate.sh subst\n"
+    echo "\t./installsubstrate.sh subst\n"
     echo "This will install Substitute\n"
     echo "Otherwise, you can run:\n"
-    echo "\tsudo ./installsubstrate.sh cs\n"
+    echo "\t./installsubstrate.sh cs\n"
     echo "This will install cycript's CydiaSubstrate\n"
     echo "If you only want to symlink CydiaSubstrate.framework to new iOS runtimes, you can run:\n"
-    echo "\tsudo ./installsubstrate.sh link\n"
+    echo "\t./installsubstrate.sh link\n"
     exit 1
 fi
 
