@@ -109,22 +109,17 @@ then
     IFS="$OIFS"
 fi
 
-set +e
-
 SJ_VOLUMES=/Library/Developer/CoreSimulator/Volumes
 OIFS="$IFS"
 IFS=$'\n'
 for SJ_volume in $(find ${SJ_VOLUMES} -type d -maxdepth 1 -name "iOS_*")
 do
     echo "Remounting ${SJ_volume} as read-write..."
-    sh $CURRENT_DIR/remount.sh ${SJ_volume} || echo 'Continuing...'
-    cd ${SJ_volume}
-    for SJ_runtime in $(find ${SJ_RUNTIME_ROOT_PREFIX} -type d -maxdepth 1 -name "*.simruntime")
-    do
-        echo "Symlink to ${SJ_volume}${SJ_runtime}"
-        mkdir -p "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks"
-        rm -rf "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks/CydiaSubstrate.framework"
-        ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks/"
-    done
+    sh $CURRENT_DIR/remount.sh ${SJ_volume}${SJ_RUNTIME_ROOT_PREFIX}/*.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks || echo 'Continuing...'
+    cd ${SJ_volume}${SJ_RUNTIME_ROOT_PREFIX}/*.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks
+    FRAMEWORK_PATH=$(pwd)
+    echo "Symlink to ${SJ_volume}"
+    rm -rf "$FRAMEWORK_PATH/CydiaSubstrate.framework"
+    ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "$FRAMEWORK_PATH/"
 done
 IFS="$OIFS"
