@@ -2,12 +2,6 @@
 
 set -e
 
-if [ "$EUID" -ne 0 ]
-then
-	echo "Error: This script must be run as root"
-	exit 1
-fi
-
 if [[ -z $1 ]]
 then
     echo "Error: Substrate type must be specified\n"
@@ -21,6 +15,8 @@ then
     echo "\tsudo ./installsubstrate.sh link\n"
     exit 1
 fi
+
+CURRENT_DIR=$PWD
 
 SJ_RUNTIME_ROOT_PREFIX=/Library/Developer/CoreSimulator/Profiles/Runtimes
 SJ_RUNTIME_ROOT_10=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot
@@ -70,33 +66,33 @@ echo "Symlink CydiaSubstrate.framework for all installed iOS runtimes..."
 if [[ -d "${SJ_RUNTIME_ROOT_10}" ]]
 then
     echo "Symlink to ${SJ_RUNTIME_ROOT_10}"
-    mkdir -p "${SJ_RUNTIME_ROOT_10}/Library/Frameworks"
-    rm -rf "${SJ_RUNTIME_ROOT_10}/Library/Frameworks/CydiaSubstrate.framework"
-    ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_10}/Library/Frameworks/"
+    sudo mkdir -p "${SJ_RUNTIME_ROOT_10}/Library/Frameworks"
+    sudo rm -rf "${SJ_RUNTIME_ROOT_10}/Library/Frameworks/CydiaSubstrate.framework"
+    sudo ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_10}/Library/Frameworks/"
 fi
 
 if [[ -d "${SJ_RUNTIME_ROOT_10_BETA}" ]]
 then
     echo "Symlink to ${SJ_RUNTIME_ROOT_10_BETA}"
-    mkdir -p "${SJ_RUNTIME_ROOT_10_BETA}/Library/Frameworks"
-    rm -rf "${SJ_RUNTIME_ROOT_10_BETA}/Library/Frameworks/CydiaSubstrate.framework"
-    ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_10_BETA}/Library/Frameworks/"
+    sudo mkdir -p "${SJ_RUNTIME_ROOT_10_BETA}/Library/Frameworks"
+    sudo rm -rf "${SJ_RUNTIME_ROOT_10_BETA}/Library/Frameworks/CydiaSubstrate.framework"
+    sudo ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_10_BETA}/Library/Frameworks/"
 fi
 
 if [[ -d "${SJ_RUNTIME_ROOT_11}" ]]
 then
     echo "Symlink to ${SJ_RUNTIME_ROOT_11}"
-    mkdir -p "${SJ_RUNTIME_ROOT_11}/Library/Frameworks"
-    rm -rf "${SJ_RUNTIME_ROOT_11}/Library/Frameworks/CydiaSubstrate.framework"
-    ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_11}/Library/Frameworks/"
+    sudo mkdir -p "${SJ_RUNTIME_ROOT_11}/Library/Frameworks"
+    sudo rm -rf "${SJ_RUNTIME_ROOT_11}/Library/Frameworks/CydiaSubstrate.framework"
+    sudo ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_11}/Library/Frameworks/"
 fi
 
 if [[ -d "${SJ_RUNTIME_ROOT_11_BETA}" ]]
 then
     echo "Symlink to ${SJ_RUNTIME_ROOT_11_BETA}"
-    mkdir -p "${SJ_RUNTIME_ROOT_11_BETA}/Library/Frameworks"
-    rm -rf "${SJ_RUNTIME_ROOT_11_BETA}/Library/Frameworks/CydiaSubstrate.framework"
-    ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_11_BETA}/Library/Frameworks/"
+    sudo mkdir -p "${SJ_RUNTIME_ROOT_11_BETA}/Library/Frameworks"
+    sudo rm -rf "${SJ_RUNTIME_ROOT_11_BETA}/Library/Frameworks/CydiaSubstrate.framework"
+    sudo ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_11_BETA}/Library/Frameworks/"
 fi
 
 if [[ -d "${SJ_RUNTIME_ROOT_PREFIX}" ]]
@@ -113,4 +109,22 @@ then
     IFS="$OIFS"
 fi
 
-cd ..
+set +e
+
+SJ_VOLUMES=/Library/Developer/CoreSimulator/Volumes
+OIFS="$IFS"
+IFS=$'\n'
+for SJ_volume in $(find ${SJ_VOLUMES} -type d -maxdepth 1 -name "iOS_*")
+do
+    echo "Remounting ${SJ_volume} as read-write..."
+    sh $CURRENT_DIR/remount.sh ${SJ_volume} || echo 'Continuing...'
+    cd ${SJ_volume}
+    for SJ_runtime in $(find ${SJ_RUNTIME_ROOT_PREFIX} -type d -maxdepth 1 -name "*.simruntime")
+    do
+        echo "Symlink to ${SJ_volume}${SJ_runtime}"
+        mkdir -p "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks"
+        rm -rf "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks/CydiaSubstrate.framework"
+        ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks/"
+    done
+done
+IFS="$OIFS"
