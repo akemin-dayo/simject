@@ -15,7 +15,7 @@ simject is BSD-licensed. See `LICENSE` for more information.
 sudo xcode-select -s /Applications/Xcode.app
 git clone https://github.com/akemin-dayo/simject.git
 cd simject/
-make all
+make setup
 ```
 
 **Note:** During the process, you may be asked by `sudo` to enter your login password. Please note that it is normal for nothing to be displayed as you type your password.
