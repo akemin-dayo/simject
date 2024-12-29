@@ -16,6 +16,8 @@ then
     exit 1
 fi
 
+echo 'You may be asked for the login password for sudo operations'
+
 CURRENT_DIR=$PWD
 
 SJ_RUNTIME_ROOT_PREFIX=/Library/Developer/CoreSimulator/Profiles/Runtimes
@@ -114,8 +116,8 @@ OIFS="$IFS"
 IFS=$'\n'
 for SJ_volume in $(find ${SJ_VOLUMES} -type d -maxdepth 1 -name "iOS_*")
 do
-    echo "Remounting ${SJ_volume} as read-write..."
-    sh $CURRENT_DIR/remount.sh ${SJ_volume}${SJ_RUNTIME_ROOT_PREFIX}/*.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks || echo 'Continuing...'
+    echo "Remounting ${SJ_volume}/Library as read-write..."
+    sh $CURRENT_DIR/remount.sh ${SJ_volume}${SJ_RUNTIME_ROOT_PREFIX}/*.simruntime/Contents/Resources/RuntimeRoot/Library || echo 'Continuing...'
     cd ${SJ_volume}${SJ_RUNTIME_ROOT_PREFIX}/*.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks
     FRAMEWORK_PATH=$(pwd)
     echo "Symlink to ${SJ_volume}"
