@@ -18,7 +18,7 @@ fi
 
 echo 'You may be asked for the login password for sudo operations'
 
-CURRENT_DIR=$PWD
+SELF_DIR=$PWD
 
 SJ_RUNTIME_ROOT_PREFIX=/Library/Developer/CoreSimulator/Profiles/Runtimes
 SJ_RUNTIME_ROOT_10=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot
@@ -26,7 +26,8 @@ SJ_RUNTIME_ROOT_10_BETA=/Applications/Xcode-beta.app/Contents/Developer/Platform
 SJ_RUNTIME_ROOT_11=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot
 SJ_RUNTIME_ROOT_11_BETA=/Applications/Xcode-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot
 
-SJ_FW_PATH=/opt/simject/Frameworks
+SJ_PATH=/opt/simject
+SJ_FW_PATH=${SJ_PATH}/Frameworks
 mkdir -p ${SJ_FW_PATH}
 cd ${SJ_FW_PATH}
 
@@ -69,32 +70,44 @@ if [[ -d "${SJ_RUNTIME_ROOT_10}" ]]
 then
     echo "Symlink to ${SJ_RUNTIME_ROOT_10}"
     sudo mkdir -p "${SJ_RUNTIME_ROOT_10}/Library/Frameworks"
+    sudo mkdir -p "${SJ_RUNTIME_ROOT_10}/Library/MobileSubstrate"
     sudo rm -rf "${SJ_RUNTIME_ROOT_10}/Library/Frameworks/CydiaSubstrate.framework"
     sudo ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_10}/Library/Frameworks/"
+    sudo rm -rf "${SJ_RUNTIME_ROOT_10}/Library/MobileSubstrate/DynamicLibraries"
+    sudo ln -s ${SJ_PATH} "${SJ_RUNTIME_ROOT_10}/Library/MobileSubstrate/DynamicLibraries"
 fi
 
 if [[ -d "${SJ_RUNTIME_ROOT_10_BETA}" ]]
 then
     echo "Symlink to ${SJ_RUNTIME_ROOT_10_BETA}"
     sudo mkdir -p "${SJ_RUNTIME_ROOT_10_BETA}/Library/Frameworks"
+    sudo mkdir -p "${SJ_RUNTIME_ROOT_10_BETA}/Library/MobileSubstrate"
     sudo rm -rf "${SJ_RUNTIME_ROOT_10_BETA}/Library/Frameworks/CydiaSubstrate.framework"
     sudo ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_10_BETA}/Library/Frameworks/"
+    sudo rm -rf "${SJ_RUNTIME_ROOT_10_BETA}/Library/MobileSubstrate/DynamicLibraries"
+    sudo ln -s ${SJ_PATH} "${SJ_RUNTIME_ROOT_10_BETA}/Library/MobileSubstrate/DynamicLibraries"
 fi
 
 if [[ -d "${SJ_RUNTIME_ROOT_11}" ]]
 then
     echo "Symlink to ${SJ_RUNTIME_ROOT_11}"
     sudo mkdir -p "${SJ_RUNTIME_ROOT_11}/Library/Frameworks"
+    sudo mkdir -p "${SJ_RUNTIME_ROOT_11}/Library/MobileSubstrate"
     sudo rm -rf "${SJ_RUNTIME_ROOT_11}/Library/Frameworks/CydiaSubstrate.framework"
     sudo ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_11}/Library/Frameworks/"
+    sudo rm -rf "${SJ_RUNTIME_ROOT_11}/Library/MobileSubstrate/DynamicLibraries"
+    sudo ln -s ${SJ_PATH} "${SJ_RUNTIME_ROOT_11}/Library/MobileSubstrate/DynamicLibraries"
 fi
 
 if [[ -d "${SJ_RUNTIME_ROOT_11_BETA}" ]]
 then
     echo "Symlink to ${SJ_RUNTIME_ROOT_11_BETA}"
     sudo mkdir -p "${SJ_RUNTIME_ROOT_11_BETA}/Library/Frameworks"
+    sudo mkdir -p "${SJ_RUNTIME_ROOT_11_BETA}/Library/MobileSubstrate"
     sudo rm -rf "${SJ_RUNTIME_ROOT_11_BETA}/Library/Frameworks/CydiaSubstrate.framework"
     sudo ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_RUNTIME_ROOT_11_BETA}/Library/Frameworks/"
+    sudo rm -rf "${SJ_RUNTIME_ROOT_11_BETA}/Library/MobileSubstrate/DynamicLibraries"
+    sudo ln -s ${SJ_PATH} "${SJ_RUNTIME_ROOT_11_BETA}/Library/MobileSubstrate/DynamicLibraries"
 fi
 
 if [[ -d "${SJ_RUNTIME_ROOT_PREFIX}" ]]
@@ -104,9 +117,12 @@ then
     for SJ_runtime in $(find ${SJ_RUNTIME_ROOT_PREFIX} -type d -maxdepth 1 -name "*.simruntime")
     do
         echo "Symlink to ${SJ_runtime}"
-        mkdir -p "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks"
-        rm -rf "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks/CydiaSubstrate.framework"
+        sudo mkdir -p "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks"
+        sudo mkdir -p "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/MobileSubstrate"
+        sudo rm -rf "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks/CydiaSubstrate.framework"
         sudo ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks/"
+        sudo rm -rf "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/MobileSubstrate/DynamicLibraries"
+        sudo ln -s ${SJ_PATH} "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/MobileSubstrate/DynamicLibraries"
     done
     IFS="$OIFS"
 fi
@@ -117,11 +133,15 @@ IFS=$'\n'
 for SJ_volume in $(find ${SJ_VOLUMES} -type d -maxdepth 1 -name "iOS_*")
 do
     echo "Remounting ${SJ_volume}/Library as read-write..."
-    sh $CURRENT_DIR/remount.sh ${SJ_volume}${SJ_RUNTIME_ROOT_PREFIX}/*.simruntime/Contents/Resources/RuntimeRoot/Library || echo 'Continuing...'
-    cd ${SJ_volume}${SJ_RUNTIME_ROOT_PREFIX}/*.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks
-    FRAMEWORK_PATH=$(pwd)
+    sh $SELF_DIR/remount.sh ${SJ_volume}${SJ_RUNTIME_ROOT_PREFIX}/*.simruntime/Contents/Resources/RuntimeRoot/Library || echo 'Continuing...'
+    cd ${SJ_volume}${SJ_RUNTIME_ROOT_PREFIX}/*.simruntime/Contents/Resources/RuntimeRoot/Library
+    LIBRARY_PATH=$(pwd)
+    FRAMEWORK_PATH=${LIBRARY_PATH}/Frameworks
     echo "Symlink to ${SJ_volume}"
     rm -rf "$FRAMEWORK_PATH/CydiaSubstrate.framework"
     ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "$FRAMEWORK_PATH/"
+    mkdir -p "$LIBRARY_PATH/MobileSubstrate"
+    rm -rf "$LIBRARY_PATH/MobileSubstrate/DynamicLibraries"
+    ln -s ${SJ_PATH} "$LIBRARY_PATH/MobileSubstrate/DynamicLibraries"
 done
 IFS="$OIFS"
