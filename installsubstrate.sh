@@ -106,7 +106,7 @@ then
         echo "Symlink to ${SJ_runtime}"
         mkdir -p "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks"
         rm -rf "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks/CydiaSubstrate.framework"
-        ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks/"
+        sudo ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks/"
     done
     IFS="$OIFS"
 fi
