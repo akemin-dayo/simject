@@ -9,7 +9,8 @@ simject is BSD-licensed. See `LICENSE` for more information.
 1. Ensure that you have Xcode installed and ran at least once.
 2. Ensure that you have added your developer account in Xcode > Preferences > Accounts tab. This is required for code-signing some binaries used in simject.
 3. Ensure that there is "iOS Development" certificate listed once you clicked on "Manage Certificates", create one if there is not.
-4. Run these commands in a Terminal instance:
+4. Ensure that Terminal has Full Disk Access permission if you are on macOS Catalina or later. You can do this by going to System Preferences > Security & Privacy > Privacy tab > Full Disk Access and adding Terminal to the list.
+5. Run these commands in a Terminal instance:
 
 ```
 sudo xcode-select -s /Applications/Xcode.app

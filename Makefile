@@ -40,6 +40,7 @@ setup:: all
 	@cp bin/simject.dylib $(DYLIB_DIR)
 	@cp simject/simject.plist $(DYLIB_DIR)
 	@echo "$(PREFIX) Installing resim"
+	@sudo mkdir -p /usr/local/bin
 	@sudo cp bin/resim /usr/local/bin/resim
 	@echo "$(DONE_PREFIX) Done. Place your tweak's dynamic libraries and accompanying property lists inside $(DYLIB_DIR) to load them in the iOS Simulator."
 	@echo "$(DONE_PREFIX) To load/reload tweaks, run 'resim' in your terminal"
