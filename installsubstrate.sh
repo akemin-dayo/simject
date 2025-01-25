@@ -13,6 +13,8 @@ then
     echo -e "This will install cycript's CydiaSubstrate\n"
     echo -e "If you only want to symlink CydiaSubstrate.framework to new iOS runtimes, you can run:\n"
     echo -e "\t./installsubstrate.sh link\n"
+    echo -e "If you are developing simulator tweaks that utilize MSHookFunction, you can install the simulator-supported version of CydiaSubstrate.tbd (tbd v4) by running:\n"
+    echo -e "\t./installsubstrate.sh theos\n"
     exit 1
 fi
 
@@ -29,9 +31,26 @@ SJ_RUNTIME_ROOT_11_BETA=/Applications/Xcode-beta.app/Contents/Developer/Platform
 SJ_PATH=/opt/simject
 SJ_FW_PATH=${SJ_PATH}/Frameworks
 mkdir -p ${SJ_FW_PATH}
-cd ${SJ_FW_PATH}
 
-if [[ $1 = "link" ]]
+if [[ $1 = "theos" ]]
+then
+    CS_FW_PATH="$THEOS/vendor/lib/CydiaSubstrate.framework"
+    if [[ ! -d $CS_FW_PATH ]]
+    then
+        echo "Error: CydiaSubstrate.framework not found in ${CS_FW_PATH}"
+        exit 1
+    fi
+    if [[ -f $CS_FW_PATH/CydiaSubstrate.tbd.bak ]]
+    then
+        echo "Notice: CydiaSubstrate.tbd has already been backed up, skipping"
+        exit 0
+    fi
+    echo "Backing up CydiaSubstrate.tbd..."
+    mv $CS_FW_PATH/CydiaSubstrate.tbd $CS_FW_PATH/CydiaSubstrate.tbd.bak
+    echo "Copying the new CydiaSubstrate.tbd to $CS_FW_PATH..."
+    cp $SELF_DIR/CydiaSubstrate.tbd $CS_FW_PATH/
+    exit 0
+elif [[ $1 = "link" ]]
 then
     if [[ ! -d CydiaSubstrate.framework ]]
     then

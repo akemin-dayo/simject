@@ -1,0 +1,11 @@
+--- !tapi-tbd
+tbd-version:     4
+targets:         [ armv7-ios, armv7s-ios, arm64-ios, arm64e-ios, i386-ios-simulator, x86_64-ios-simulator, arm64-ios-simulator ]
+install-name:    '/Library/Frameworks/CydiaSubstrate.framework/CydiaSubstrate'
+exports:
+  - targets:          [ armv7-ios, armv7s-ios, arm64-ios, arm64e-ios, i386-ios-simulator, x86_64-ios-simulator, arm64-ios-simulator ]
+    symbols:          [ _MSCloseImage, _MSDebug, _MSFindAddress, _MSFindSymbol,
+                        _MSGetImageByName, _MSHookClassPair, _MSHookFunction,
+                        _MSHookMemory, _MSHookMessageEx, _MSImageAddress,
+                        _MSMapImage ]
+...

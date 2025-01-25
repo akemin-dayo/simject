@@ -62,6 +62,8 @@ rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 
 2. Note that, from the step 1, you can symlink instead of copying `CydiaSubstrate.framework` to multiple places. This is what `installsubstrate.sh` does to ease your life.
 
+3. By default, tweaks built for simulator will not use CydiaSubstrate as logos is configured to generate hooking code using only internal Objective-C runtime methods. While hooking via `%hook` works regardless of generators, hooking via `%hookf` is not supported unless you explicitly specify the logos generator to be `MobileSubstrate` (or `libhooker`) by using [%config](https://theos.dev/docs/logos-syntax). For example, if you want to use CydiaSubstrate for hooking, add `%config(generator=MobileSubstrate)` to your `Tweak.x(m)`. Lastly, to build simulator tweaks successfully, copy `CydiaSubstrate.tbd` from this project to `$THEOS/vendor/lib/CydiaSubstrate.framework` and replace the existing one. Make a backup if necessary.
+
 ### simject usage
 
 1. Place your dynamic libraries and accompanying property lists inside `/opt/simject` to load them in the iOS Simulator. Do not delete `simject.plist` and `simject.dylib`.
