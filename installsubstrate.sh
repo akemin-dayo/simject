@@ -18,7 +18,7 @@ then
     exit 1
 fi
 
-echo 'You may be asked for the login password for sudo operations'
+echo "You may be asked for the login password for sudo operations"
 
 SELF_DIR=$PWD
 
@@ -40,7 +40,7 @@ then
         echo "Error: CydiaSubstrate.framework not found in ${CS_FW_PATH}"
         exit 1
     fi
-    if [[ -f $CS_FW_PATH/CydiaSubstrate.tbd.bak ]]
+    if [[ -f ${CS_FW_PATH}/CydiaSubstrate.tbd.bak ]]
     then
         echo "Notice: CydiaSubstrate.tbd has already been backed up, skipping"
         exit 0
@@ -52,6 +52,7 @@ then
     exit 0
 elif [[ $1 = "link" ]]
 then
+    cd ${SJ_FW_PATH}
     if [[ ! -d CydiaSubstrate.framework ]]
     then
         echo "Error: CydiaSubstrate.framework not found in ${SJ_FW_PATH}"
@@ -59,6 +60,7 @@ then
     fi
 elif [[ $1 = "subst" ]]
 then
+    cd ${SJ_FW_PATH}
     echo "Installing Substitute..."
     rm -rf substitute CydiaSubstrate.framework
     git clone https://github.com/PoomSmart/substitute.git
@@ -71,6 +73,7 @@ then
     cd .. && rm -rf substitute
 elif [[ $1 = "cs" ]]
 then
+    cd ${SJ_FW_PATH}
     echo "Installing CydiaSubstrate..."
     rm -rf CydiaSubstrate.framework
     curl -Lo /tmp/simject_cycript.zip https://cache.saurik.com/cycript/mac/cycript_0.9.594.zip
@@ -83,11 +86,11 @@ else
     exit 1
 fi
 
-echo "Symlink CydiaSubstrate.framework for all installed iOS runtimes..."
+echo "Symlinking CydiaSubstrate.framework for all installed iOS runtimes..."
 
 if [[ -d "${SJ_RUNTIME_ROOT_10}" ]]
 then
-    echo "Symlink to ${SJ_RUNTIME_ROOT_10}"
+    echo "Symlinking to ${SJ_RUNTIME_ROOT_10}"
     sudo mkdir -p "${SJ_RUNTIME_ROOT_10}/Library/Frameworks"
     sudo mkdir -p "${SJ_RUNTIME_ROOT_10}/Library/MobileSubstrate"
     sudo rm -rf "${SJ_RUNTIME_ROOT_10}/Library/Frameworks/CydiaSubstrate.framework"
@@ -98,7 +101,7 @@ fi
 
 if [[ -d "${SJ_RUNTIME_ROOT_10_BETA}" ]]
 then
-    echo "Symlink to ${SJ_RUNTIME_ROOT_10_BETA}"
+    echo "Symlinking to ${SJ_RUNTIME_ROOT_10_BETA}"
     sudo mkdir -p "${SJ_RUNTIME_ROOT_10_BETA}/Library/Frameworks"
     sudo mkdir -p "${SJ_RUNTIME_ROOT_10_BETA}/Library/MobileSubstrate"
     sudo rm -rf "${SJ_RUNTIME_ROOT_10_BETA}/Library/Frameworks/CydiaSubstrate.framework"
@@ -109,7 +112,7 @@ fi
 
 if [[ -d "${SJ_RUNTIME_ROOT_11}" ]]
 then
-    echo "Symlink to ${SJ_RUNTIME_ROOT_11}"
+    echo "Symlinking to ${SJ_RUNTIME_ROOT_11}"
     sudo mkdir -p "${SJ_RUNTIME_ROOT_11}/Library/Frameworks"
     sudo mkdir -p "${SJ_RUNTIME_ROOT_11}/Library/MobileSubstrate"
     sudo rm -rf "${SJ_RUNTIME_ROOT_11}/Library/Frameworks/CydiaSubstrate.framework"
@@ -120,7 +123,7 @@ fi
 
 if [[ -d "${SJ_RUNTIME_ROOT_11_BETA}" ]]
 then
-    echo "Symlink to ${SJ_RUNTIME_ROOT_11_BETA}"
+    echo "Symlinking to ${SJ_RUNTIME_ROOT_11_BETA}"
     sudo mkdir -p "${SJ_RUNTIME_ROOT_11_BETA}/Library/Frameworks"
     sudo mkdir -p "${SJ_RUNTIME_ROOT_11_BETA}/Library/MobileSubstrate"
     sudo rm -rf "${SJ_RUNTIME_ROOT_11_BETA}/Library/Frameworks/CydiaSubstrate.framework"
@@ -135,7 +138,7 @@ then
     IFS=$'\n'
     for SJ_runtime in $(find ${SJ_RUNTIME_ROOT_PREFIX} -type d -maxdepth 1 -name "*.simruntime")
     do
-        echo "Symlink to ${SJ_runtime}"
+        echo "Symlinking to ${SJ_runtime}"
         sudo mkdir -p "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks"
         sudo mkdir -p "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/MobileSubstrate"
         sudo rm -rf "${SJ_runtime}/Contents/Resources/RuntimeRoot/Library/Frameworks/CydiaSubstrate.framework"
