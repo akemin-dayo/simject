@@ -156,9 +156,10 @@ then
     IFS=$'\n'
     for SJ_volume in $(find ${SJ_VOLUMES} -type d -maxdepth 1 -name "iOS_*")
     do
-        echo "Remounting ${SJ_volume}/Library as read-write..."
-        sh $SELF_DIR/remount.sh ${SJ_volume}${SJ_RUNTIME_ROOT_PREFIX}/*.simruntime/Contents/Resources/RuntimeRoot/Library || echo 'Continuing...'
-        cd ${SJ_volume}${SJ_RUNTIME_ROOT_PREFIX}/*.simruntime/Contents/Resources/RuntimeRoot/Library
+        RUNTIME_ROOT=${SJ_volume}${SJ_RUNTIME_ROOT_PREFIX}/*.simruntime/Contents/Resources/RuntimeRoot
+        echo "Remounting ${RUNTIME_ROOT}/Library as read-write..."
+        sh $SELF_DIR/remount.sh ${RUNTIME_ROOT}/Library || echo 'Continuing...'
+        cd ${RUNTIME_ROOT}/Library
         LIBRARY_PATH=$(pwd)
         FRAMEWORK_PATH=${LIBRARY_PATH}/Frameworks
         echo "Symlink to ${SJ_volume}"
