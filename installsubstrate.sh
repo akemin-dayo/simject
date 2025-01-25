@@ -4,15 +4,15 @@ set -e
 
 if [[ -z $1 ]]
 then
-    echo "Error: Substrate type must be specified\n"
-    echo "If you target iOS 12+ (of Xcode 10+), you must run the following:\n"
-    echo "\t./installsubstrate.sh subst\n"
-    echo "This will install Substitute\n"
-    echo "Otherwise, you can run:\n"
-    echo "\t./installsubstrate.sh cs\n"
-    echo "This will install cycript's CydiaSubstrate\n"
-    echo "If you only want to symlink CydiaSubstrate.framework to new iOS runtimes, you can run:\n"
-    echo "\t./installsubstrate.sh link\n"
+    echo -e "Error: Substrate type must be specified\n"
+    echo -e "If you target iOS 12+ (of Xcode 10+), you must run the following:\n"
+    echo -e "\t./installsubstrate.sh subst\n"
+    echo -e "This will install Substitute\n"
+    echo -e "Otherwise, you can run:\n"
+    echo -e "\t./installsubstrate.sh cs\n"
+    echo -e "This will install cycript's CydiaSubstrate\n"
+    echo -e "If you only want to symlink CydiaSubstrate.framework to new iOS runtimes, you can run:\n"
+    echo -e "\t./installsubstrate.sh link\n"
     exit 1
 fi
 
