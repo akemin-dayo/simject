@@ -25,6 +25,18 @@ Now, we need to create a version of `CydiaSubstrate.framework` that has support 
 
 ### Getting Cydia Substrate to function properly with simject
 
+TL;DR
+
+```bash
+# First time installation
+./installsubstrate.sh subst # Install Substitute
+# ./installsubstrate.sh cs # Install Cydia Substrate
+
+# When you added a new simulator
+# Or, when tmpfs is unmounted
+./installsubstrate.sh link
+```
+
 **Unless you want to do it manually**, you can use [`installsubstrate.sh`](./installsubstrate.sh) script to symlink `CydiaSubstrate.framework` to the appropriate directory **to every iOS runtime**. You will be asked to input your password for certain `sudo` operations. Otherwise, continue reading.
 
 If you use Xcode 10 (and above) and target iOS 12 (and above), you need to rely on [substitute](https://github.com/sbingner/substitute) rather than cycript's included `CydiaSubstrate.framework`.
