@@ -7,9 +7,9 @@ simject is BSD-licensed. See `LICENSE` for more information.
 ### Setting up the simject environment
 
 1. Ensure that you have Xcode installed and ran at least once.
-2. Ensure that you have added your developer account in Xcode > Preferences > Accounts tab. This is required for code-signing some binaries used in simject.
-3. Ensure that there is "iOS Development" certificate listed once you clicked on "Manage Certificates", create one if there is not.
-4. Ensure that Terminal has Full Disk Access permission if you are on macOS Catalina or later. You can do this by going to System Preferences > Security & Privacy > Privacy tab > Full Disk Access and adding Terminal to the list.
+2. Ensure that you have added your developer account in `Xcode > Preferences > Accounts` tab. This is required for code-signing some binaries used in simject.
+3. Ensure that there is `iOS Development` certificate listed once you clicked on `Manage Certificates` button, create one if there is not.
+4. Ensure that Terminal has Full Disk Access permission if you are on macOS Catalina or later. You can do this by going to `System Preferences > Security & Privacy > Privacy tab > Full Disk Access` and adding Terminal to the list.
 5. Run these commands in a Terminal instance:
 
 ```
@@ -67,8 +67,9 @@ mv -v /tmp/simject_cycript/Cycript.lib/libsubstrate.dylib CydiaSubstrate.framewo
 rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 ```
 
-1. Copy the resulting `CydiaSubstrate.framework` bundle to `/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS${SDK_VERSION}.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks/` where `${SDK_VERSION}` is your desired SDK version. If `/Library/Frameworks` does not exist, you can create it manually.
+1. (For iOS 15 runtimes and earlier) Copy the resulting `CydiaSubstrate.framework` bundle to `/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS${SDK_VERSION}.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks/` where `${SDK_VERSION}` is your desired SDK version. If `/Library/Frameworks` does not exist, you can create it manually.
    * Let `${XCODE}` be `Xcode` or `Xcode-beta`.
+   * For iOS 16+ runtimes, the destination directory is mounted as read-only. It is not possible to write to it directly unless one utilizes `tmpfs` technique. Use `./installsubstrate.sh link` to create tmpfs overlay for these runtimes.
    * For runtimes bundled in Xcode 11+, copy the framework to `/Applications/${XCODE}.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks/`.
    * For runtimes bundled in Xcode 9 - 10, copy the framework to `/Applications/${XCODE}.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/Library/Frameworks/`.
 
@@ -80,7 +81,7 @@ rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 
 1. Place your dynamic libraries and accompanying property lists inside `/opt/simject` to load them in the iOS Simulator. Do not delete `simject.plist` and `simject.dylib`.
    
-2. Inside the `bin` subdirectory, you will find the `resim` command-line tool. Execute it to cause booted iOS Simulator(s) to respring and to be able to load tweaks.
+2. Execute `resim` command-line tool to make booted iOS Simulator(s) respring and be able to load tweaks.
 
 3. IMPORTANT: Please note that you will need to run `resim` every time the iOS Simulator reboots or if SpringBoard crashes by itself.
 
@@ -93,12 +94,12 @@ rm -rfv /tmp/simject_cycript /tmp/simject_cycript.zip
 1. Open your project's `Makefile`.
 
 2. Set the correct `TARGET` for your machine.
-   * **For Intel Mac:** Set `TARGET = simulator:clang::7.0` (a must for Xcode 10, with 64-bit compatibility) or `TARGET = simulator:clang::5.0` otherwise (with 32-bit compatibility). Note that this is just an example, you can change the SDK version used and iOS version to target if you wish.
    * **For Apple Silicon Mac:** Set `TARGET = simulator:clang::12.0`.
+   * **For Intel Mac:** Set `TARGET = simulator:clang::7.0` (a must for Xcode 10, with 64-bit compatibility) or `TARGET = simulator:clang::5.0` otherwise (with 32-bit compatibility). Note that this is just an example, you can change the SDK version used and iOS version to target if you wish.
 
 3. Set the correct `ARCHS` for your machine.
-   * **For Intel Mac:** If you want to support both 64-bit and 32-bit iOS Simulators, set `ARCHS = x86_64 i386` to your Makefile. If not (or if you're targeting iOS 11), set `ARCHS = x86_64`.
    * **For Apple Silicon Mac:** Set `ARCHS = arm64`. There is no 32-bit support.
+   * **For Intel Mac:** If you want to support both 64-bit and 32-bit iOS Simulators, set `ARCHS = x86_64 i386` to your Makefile. If not (or if you're targeting iOS 11), set `ARCHS = x86_64`.
 
 4. `make` your project and copy `.theos/obj/iphone_simulator/${YOUR_TWEAK}.dylib` to `/opt/simject/${YOUR_TWEAK}.dylib`.
 
