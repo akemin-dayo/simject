@@ -4,6 +4,21 @@ simject is a command-line tool and iOS dynamic library that allows iOS tweak dev
 
 simject is BSD-licensed. See `LICENSE` for more information.
 
+## Alternative: simulator-trainer for Better Developer Experience
+
+**For a more streamlined development experience**, consider using [simulator-trainer](https://github.com/EthanArbuckle/simulator-trainer) instead. simulator-trainer offers significant improvements over simject:
+
+- **No need to build tweaks with simulator target** - You can use your regular device tweaks
+- **Drag & drop installation** - Simply drag .deb files onto the simulator window to install tweaks
+- **No CLI setup required** - No need for command-line tools like `resim`
+- **Automatic binary conversion** - Non-simulator binaries are automatically converted during installation
+- **Built-in debugging tools** - Includes objc_msgSend tracing and cycript integration
+- **Simpler workflow** - Just boot a simulator with simulator-trainer and drop your tweak files
+
+simulator-trainer turns the iOS Simulator into a more powerful development environment by mounting writable overlays and providing in-process tweak injection, making the development process much more user-friendly.
+
+**If you prefer the traditional approach or need more control over the setup process**, continue with simject below.
+
 ### Setting up the simject environment
 
 1. Ensure that you have Xcode installed and ran at least once.
