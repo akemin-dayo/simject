@@ -168,7 +168,7 @@ then
         mkdir -p "$LIBRARY_PATH/MobileSubstrate"
         rm -rf "$LIBRARY_PATH/MobileSubstrate/DynamicLibraries"
         ln -s "${SJ_PATH}" "$LIBRARY_PATH/MobileSubstrate/DynamicLibraries"
-        sh $SELF_DIR/remount.sh ${RUNTIME_ROOT}/usr/lib || echo "Continue or Could not remount ${RUNTIME_ROOT}/usr/lib"
+        # sh $SELF_DIR/remount.sh ${RUNTIME_ROOT}/usr/lib || echo "Continue or Could not remount ${RUNTIME_ROOT}/usr/lib"
     done
     IFS="$OIFS"
 fi
