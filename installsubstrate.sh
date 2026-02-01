@@ -158,16 +158,17 @@ then
     do
         RUNTIME_ROOT=${SJ_volume}${SJ_RUNTIME_ROOT_PREFIX}/*.simruntime/Contents/Resources/RuntimeRoot
         echo "Remounting ${RUNTIME_ROOT}/Library as read-write..."
-        sh $SELF_DIR/remount.sh ${RUNTIME_ROOT}/Library || echo 'Continuing...'
+        sh $SELF_DIR/remount.sh ${RUNTIME_ROOT}/Library || echo "Continue or Could not remount ${RUNTIME_ROOT}/Library"
         cd ${RUNTIME_ROOT}/Library
         LIBRARY_PATH=$(pwd)
         FRAMEWORK_PATH=${LIBRARY_PATH}/Frameworks
         echo "Symlink to ${SJ_volume}"
         rm -rf "$FRAMEWORK_PATH/CydiaSubstrate.framework"
-        ln -s ${SJ_FW_PATH}/CydiaSubstrate.framework "$FRAMEWORK_PATH/"
+        ln -s "${SJ_FW_PATH}/CydiaSubstrate.framework" "$FRAMEWORK_PATH/"
         mkdir -p "$LIBRARY_PATH/MobileSubstrate"
         rm -rf "$LIBRARY_PATH/MobileSubstrate/DynamicLibraries"
-        ln -s ${SJ_PATH} "$LIBRARY_PATH/MobileSubstrate/DynamicLibraries"
+        ln -s "${SJ_PATH}" "$LIBRARY_PATH/MobileSubstrate/DynamicLibraries"
+        sh $SELF_DIR/remount.sh ${RUNTIME_ROOT}/usr/lib || echo "Continue or Could not remount ${RUNTIME_ROOT}/usr/lib"
     done
     IFS="$OIFS"
 fi
